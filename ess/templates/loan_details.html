@@ -1,0 +1,229 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            color: black;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            color: #2575fc;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+            color: black;
+        }
+
+        .table th {
+            background: #2575fc;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(37, 117, 252, 0.1);
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #ff512f, #dd2476);
+            border: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #dd2476, #ff512f);
+            transform: translateY(-2px);
+        }
+
+        @media screen and (max-width: 768px) {
+            .table, th, td {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if loan_application %}
+        {% if loan_application.appstatus == "Approved" %}
+        <div class="container mt-4">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-gradient text-white text-center" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+                    <h3 class="mb-0">Loan Application Details</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-secondary">Loan</th>
+                                    <td>{{ loan_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-secondary">Loan Amount</th>
+                                    <td>₹ {{ loan_application.loanamt }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-secondary">No of Dues</th>
+                                    <td>{{ loan_application.noofdues }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-secondary">Status</th>
+                                    <td>
+                                        <span class="badge {% if loan_application.appstatus == 'Approved' %}bg-success
+                                                          {% elif loan_application.appstatus == 'Pending' %}bg-warning text-dark
+                                                          {% elif loan_application.appstatus == 'Rejected' %}bg-danger
+                                                          {% else %}bg-secondary{% endif %}">
+                                            {{ loan_application.appstatus }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+            {% if loan_details %}
+                
+                <div class="table-container">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Loan No</th>
+                                <th>Loan Date</th>
+                                <th>Loan Amount</th>
+                                <th>Interest Rate</th>
+                                <th>Loan Tenure</th>
+                                <th>Loan EMI</th>
+                                <th>Interest Amount</th>
+                                <th>Total Amount</th>
+                                <th>Deduction Start Date</th>
+                                <th>Deduction End Date</th>
+                                <th>Received Amount</th>
+                                <th>Balance Amount</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ loan_details.loanno }}</td>
+                                <td>{{ loan_details.loandt }}</td>
+                                <td>{{ loan_details.loanamt }}</td>
+                                <td>{{ loan_details.intrate }}</td>
+                                <td>{{ loan_details.loantenure }}</td>
+                                <td>{{ loan_details.loanemi }}</td>
+                                <td>{{ loan_details.intamt }}</td>
+                                <td>{{ loan_details.totalamt }}</td>
+                                <td>{{ loan_details.recstarton }}</td>
+                                <td>{{ loan_details.recendon }}</td>
+                                <td>{{ loan_details.recdamt }}</td>
+                                <td>{{ loan_details.balamt }}</td>
+                                <td>{{ loan_details.status }}</td>
+                                <td>{{ loan_details.remarks }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-danger">No loan details found.</p>
+            {% endif %}
+
+            <h3>Loan Repayment Schedule</h3>
+            {% if loan_schedule %}
+                <div class="table-container">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Due Date</th>
+                                <th>Deduction Mode</th>
+                                <th>Due Amount</th>
+                                <th>Recovered Amount</th>
+                                <th>Cash Payment 1</th>
+                                <th>Cash Payment 2</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in loan_schedule %}
+                            <tr>
+                                <td>{{ schedule.deddt }}</td>
+                                <td>{{ schedule.dedmode }}</td>
+                                <td>{{ schedule.dueamt }}</td>
+                                <td>{{ schedule.rded }}</td>
+                                <td>{{ schedule.cash1 }}</td>
+                                <td>{{ schedule.cash2 }}</td>
+                                <td>{{ schedule.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-warning">No repayment schedule found for this loan.</p>
+            {% endif %}
+        {% else %}
+            <p class="alert alert-secondary">Loan status: {{ loan_application.appstatus }}</p>
+        {% endif %}
+    {% else %}
+        <p class="alert alert-danger">No loan application found.</p>
+    {% endif %}
+
+    <a href="{% url 'loans' %}" class="btn btn-primary mt-3">Back to Loans</a>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid FN Code Count</title>
+</head>
+<body>
+    <h2>Valid FN Code Count</h2>
+    
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <p>Selected Month: {{ selected_month }}</p>
+    <p>Selected Year: {{ selected_year }}</p>
+    <p>Valid FN Code Count: <strong>{{ valid_fncode_count }}</strong></p>
+
+    <form method="GET">
+        <label for="month">Select Month:</label>
+        <select name="month" id="month">
+            {% for m in months %}  
+                <option value="{{ m }}" {% if m == selected_month|stringformat:"s" %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="year">Select Year:</label>
+        <select name="year" id="year">
+            {% for y in years %}
+                <option value="{{ y }}" {% if y == selected_year|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

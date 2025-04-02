@@ -1,0 +1,1971 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Employee Self-Service Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        *{
+            cursor: default;
+            user-select: none;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+        @keyframes revealEffect {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+        
+        @keyframes zoomIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        
+        .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #FFD700, #FFB347);
+    /* background: white; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    animation: revealEffect 2s ease-in-out forwards 1s;
+    text-align: center;
+    padding: 5%;
+}
+
+.overlay h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem); /* Responsive font size */
+    color: rgb(0, 0, 0);
+    animation: zoomIn 1s ease-in-out;
+    margin: 0;
+}
+
+        body {
+            display: flex;
+            background-color: #ecf0f1;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            height: clamp(28vh, 3vw + 30vh, 40vh); /* Ensures it stays within a balanced range */
+            background: url('/static/pex.jpg') no-repeat center center;
+            background-size: cover;
+            color: rgb(43, 41, 41);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: max(10px, 2vw); /* Dynamically adjusts padding */
+            position: relative;
+        }
+
+        .floating-menu {
+            position: absolute;
+            top: 2%;
+            left: 3%;
+            display: flex;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+.floating-brand {
+    font-size: 22px;
+    font-weight: 600;
+    color: rgb(0, 0, 0);
+    letter-spacing: 1%;
+}
+
+
+
+.hey {
+    font-family: 'Dancing Script', cursive;
+    position: absolute;
+    left: clamp(10%, 18vw, 20%); /* Adjusts left positioning for better responsiveness */
+    top: 40%;
+    transform: translateY(-50%);
+    text-align: left;
+    color: #1B1B2F;
+    font-size: clamp(12px, 3vw, 40px); /* Dynamically adjusts font size */
+    max-width: clamp(250px, 45vw, 600px); /* Prevents text from overflowing */
+    line-height: 1.3; /* Improves readability on different screens */
+    white-space: nowrap; /* Prevents breaking into multiple lines */
+}
+
+        .hey h2{
+            margin-left: 15px;
+        }
+        .search-container {
+    position: relative;
+    width: 90%; /* Adjusts based on available space */
+    max-width: min(90vw, 380px); /* Responsive width */
+    margin-top: 15px;
+    z-index: 10000; /* Ensures it's above most elements */
+}
+
+.search-input {
+    width: 100%;
+    padding: clamp(10px, 2vh, 12px) clamp(40px, 10vw, 50px) clamp(10px, 2vh, 12px) clamp(15px, 5vw, 20px);
+    font-size: clamp(0.8rem, 2.5vw, 1rem); 
+    border-radius: 30px;
+    border: 2px solid transparent;
+    outline: none;
+    background: linear-gradient(45deg, #2C3E50, #34495E);
+    color: #EEEEEE;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-input::placeholder {
+    color: rgba(238, 238, 238, 0.7);
+    font-weight: 300;
+}
+
+.search-input:focus {
+    border-color: #00ADB5;
+    background: #393E46;
+    box-shadow: 0 6px 12px rgba(0, 173, 181, 0.4);
+}
+
+/* Search Icon */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+    font-size: clamp(16px, 4vw, 20px); /* Responsive icon size */
+    color: #00ADB5;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.search-container:hover .search-icon {
+    transform: translateY(-50%) scale(1.1);
+    color: #EEEEEE;
+}
+
+/* Ensure the search dropdown is on top of everything */
+.search-dropdown {
+    position: absolute !important; /* Makes it independent of parents */
+    top: 70px; /* Adjusts under search */
+    margin-left: 10%;
+    transform: translateX(-50%);
+    width: 90%; /* Adapts to screen size */
+    max-width: min(90vw, 380px); /* Limits max size */
+    background: #fede4f;
+    border-radius: 10px;
+    display: none;
+    max-height: min(250px, 50vh); /* Limits max height on small screens */
+    overflow-y: auto;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    z-index: 9999999 !important; /* ABSOLUTE TOP PRIORITY */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: auto !important; /* Ensures it's clickable */
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    padding: clamp(8px, 2vh, 12px) clamp(12px, 5vw, 20px);
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    color: #EEEEEE;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-item:hover {
+    background: #00ADB5;
+    color: #2C3E50;
+}
+        .header .actions {
+            position: absolute;
+            top: 2%;
+            right: 2%;
+            display: flex;
+            gap: 1vw;
+            align-items: center;
+        }
+        .header .actions i,
+        .header .actions img {
+    font-size: clamp(16px, 2vw, 24px); /* Responsive font size */
+    width: clamp(30px, 5vw, 40px); /* Responsive width */
+    height: clamp(30px, 5vw, 40px); /* Responsive height */
+    color: rgb(255, 225, 0);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+.header .actions i::after,
+.header .actions img::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: clamp(-3px, -0.5vw, -5px); /* Responsive bottom spacing */
+    width: 100%;
+    height: clamp(1px, 0.3vw, 2px); /* Responsive underline height */
+    background: white;
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.header .actions i:hover,
+.header .actions img:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.2);
+    color: #ffeb99; /* Light yellow hover effect */
+}
+
+.header .actions i:hover::after,
+.header .actions img:hover::after {
+    transform: scaleX(1);
+}
+        .header .actions img {
+            object-fit: cover;
+        }
+.header .container-row {
+    display: flex;
+    justify-content: center;
+    gap: clamp(5px, 1vw, 20px); /* Responsive gap */
+    position: absolute;
+    top: clamp(30px, 25vh, 250px); /* Keeps it inside the header */
+    overflow-x: auto; /* Enables horizontal scrolling if needed */
+    white-space: nowrap; /* Prevents wrapping */
+    padding: 10px;
+}
+
+        .actions i, .actions img {
+    cursor: pointer;
+}
+
+.dropdownMenu {
+    display: none;
+    position: absolute;
+    right: max(5px, 2vw); /* Responsive positioning */
+    top: min(50px, 10vh); /* Keeps it positioned correctly */
+    background: #fff;
+    box-shadow: 0 max(5px, 1vw) max(25px, 3vw) rgba(0, 0, 0, 0.15);
+    border-radius: max(5px, 1vw); /* Responsive border radius */
+    padding: max(5px, 1vw);
+    min-width: max(150px, 15vw); /* Adjust width based on screen */
+    max-width: 90vw; /* Ensures it doesn’t exceed viewport */
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+/* Show dropdown smoothly */
+.showDropdown {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Count Badges */
+.count-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Dropdown Header */
+.dropdown-header {
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    margin-bottom: 5px;
+    text-align: center;
+    color: #333;
+}
+
+/* Dropdown Items */
+.dropdownMenu a, 
+.dropdownMenu p, 
+.dropdown-item {
+    display: block;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.dropdownMenu a:hover,
+.dropdown-item:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+/* Dropdown Footer */
+.dropdown-footer {
+    font-size: 13px;
+    text-align: center;
+    color: #007bff;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.dropdown-footer:hover {
+    text-decoration: underline;
+}
+
+/* Specific dropdown positioning */
+#notifDropdownMenu {
+    top: 50px;
+    right: 60px;
+}
+
+#msgDropdownMenu {
+    top: 50px;
+    right: 30px;
+}
+
+#userDropdownMenu {
+    top: 50px;
+    right: 0;
+}
+
+
+.header .info-container {
+    width: clamp(35px, 18vw, 200px);  /* Slightly adjusted min/max for better scaling */
+    height: clamp(60px, 10vw, 150px); /* Increased max height for large screens */
+    background: rgba(255, 255, 255, 0.15); /* Glassmorphism effect */
+    backdrop-filter: blur(12px);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: max(8px, 1.5vw); /* Scales better on small screens */
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.2), 
+                -6px -6px 12px rgba(255, 255, 255, 0.1); /* Neumorphism effect */
+    font-size: clamp(8px, 2vw, 18px); /* More readable text */
+    font-weight: 300;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    z-index: 10 !important;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: max(5px, 1vw); /* Ensures proper spacing on all screens */
+    text-align: center;
+}
+
+
+/* Hover Effect - Soft glow with color change */
+.header .info-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3), 
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 225, 0, 0.25); /* Soft golden glow */
+}
+
+/* Icon Styling */
+.info-container i {
+    font-size: clamp(12px, 2vw, 28px); /* Adjusts size based on viewport width */
+    margin-bottom: 0.3em; /* Scales with font size */
+    color: #ffffff; /* Professional Blue */
+    transition: color 0.3s ease;
+}
+
+/* Hover Effect for Icon */
+.header .info-container:hover i {
+    color: #ffb400; /* Golden Yellow */
+}
+.attnmodal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .attnmodal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: min(95%, 650px);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .attnclose-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+.sidebar {
+            width: 270px;
+            background: linear-gradient(135deg, #2C3E50, #1A252F);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            padding-top: 10px;
+            transition: all 0.4s ease-in-out;
+            left: -300px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            border-top-right-radius: 2500px;
+            border-bottom-right-radius: 1000px;
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+        .sidebar .profile {
+            text-align: center;
+            padding: 10px;
+        }
+        .sidebar .profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 6px;
+            border: 3px solid #fff;
+        }
+        .usr {
+            font-size: smaller;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        .sidebar a, .dropdown-btn {
+            display: flex;
+            align-items: center;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .sidebar a:hover, .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(8px);
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 80px;
+            left: 10px;
+            cursor: pointer;
+            background: #ffcc00;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 22px;
+            height: 50px;
+            width: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: bounce 1.5s infinite;
+            z-index: 1100;
+            transition: left 0.4s ease-in-out;
+        }
+        .toggle-btn:hover {
+            background: #ffdb4d;
+            transform: scale(1.1);
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .divider {
+            position: relative;
+            width: 100%;
+            height: 2px;
+            font-weight: bolder;
+            color: #291f3f;
+            border-radius: 5px;
+            margin-top: 8%;
+        }
+        .main_content {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap; /* Wraps items on smaller screens */
+    width: 100%;
+    height: auto; /* Adjusts dynamically */
+    gap: 15px;
+    justify-content: center; /* Centers content */
+    padding: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+    flex-direction: row; /* Row layout on big screens */
+    align-items: stretch; /* Ensures equal height for children */
+}
+/* Default: Large screens - Horizontal Layout */
+@media (min-width: 768px) {
+    .main_content {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+/* Small screens - Vertical Layout */
+@media (max-width: 767px) {
+    .main_content {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+  /* _____________________________calendar */
+  .small-container {
+    position: relative;
+    flex: 1; /* Takes available space dynamically */
+    width: min(100%, 90vw); /* At least 90% on small screens, adjusts on large */
+    max-width: 100%; /* Prevents overflow */
+    padding: 1vw; /* Slightly reduced padding */
+    border-radius: 15px;
+    background: linear-gradient(145deg, #d1e8e2, #ffffff);
+    color: #333;
+    box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+    display: flex;
+    flex-direction: column; /* Stack content on small screens */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vw; /* Reduced gap */
+}
+
+
+/* Calendar Header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: min(2vw, 14px);
+    font-weight: bold;
+    color: #2c3e50;
+    width: 100%;
+}
+
+/* Calendar Grid - Always 7 Days Per Row, Starts with Sunday */
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Always 7 days per row */
+    gap: 0.3vw; /* Reduced gap between days */
+    width: 100%;
+}
+
+/* Individual Day */
+.day {
+    text-align: center;
+    padding: min(1vw, 2px); /* Slightly smaller padding */
+    font-size: min(2vw, 10px);
+    border-radius: 5px;
+    cursor: pointer;
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    box-shadow: 2px 2px 4px #d1d1d1, -2px -2px 4px #ffffff;
+    transition: 0.2s;
+    min-height: min(5vw, 25px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover and Current Day Styling */
+.day:hover, .current-day {
+    background: #ff9800;
+    color: white;
+    box-shadow: inset 2px 2px 4px #d17800, inset -2px -2px 4px #ffb04c;
+}
+
+/* Sundays & Holidays */
+.sunday, .holiday {
+    background: #ff4d4d;
+    color: white;
+    box-shadow: inset 2px 2px 4px #d13434, inset -2px -2px 4px #ff6666;
+}
+
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #ffffff, #e0e0e0);
+    color: #333;
+    padding: 15px;
+    border-radius: 12px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    width: min(90%, 350px);
+    min-height: 150px;
+    box-shadow: 5px 5px 15px #bebebe, -5px -5px 15px #ffffff;
+    z-index: 10000;
+}
+
+.popup button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: #ff9800;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 2px 2px 5px #d17800, -2px -2px 5px #ffb04c;
+}
+
+.popup button:hover {
+    background: #e68900;
+}
+
+/* ____________________________notice */
+
+.Dash {
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    flex: 1;
+
+    height: auto;
+    gap: 10px;
+}
+
+.notice-board {
+    position: relative;
+    width: 100%; 
+    height: auto; /* Adapts height dynamically */
+    background: #f49e9e;
+    padding: 2%; /* Responsive padding based on container size */
+    border-radius: 10px;
+    box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.5),
+                inset -3px -3px 5px rgba(0, 0, 0, 0.05); /* Soft outer shadow */
+    border: 1px solid #ddd;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+ /* Notice Board Title */
+.notice-title {
+    text-align: center;
+    font-size: clamp(12px, 3vw, 18px); /* Scales with screen size */
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5em; /* Adapts based on font size */
+    font-family: "Poppins", sans-serif;
+    color: #333;
+    letter-spacing: 0.05em; /* Enhances readability */
+    word-wrap: break-word; /* Prevents text from overflowing */
+}
+
+
+/* Notice Container */
+.notice-container {
+    width: 100%;
+    height: 105px;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.5),
+                    inset -3px -3px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    position: relative;
+}
+
+/* Notice Slider */
+.notice-slider {
+    display: flex;
+    width: 400%;
+    transition: transform 0.8s ease-in-out;
+}
+
+/* Notice Item */
+.notice-item {
+    min-width: 100%;
+    height: 100%; /* Adapts height based on content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(12px, 2vw, 16px); /* Scales text size dynamically */
+    font-weight: 500;
+    color: #333;
+    background: transparent;
+    border-radius: 6px;
+    text-align: center;
+    padding: clamp(5px, 2vw, 12px); /* Scales padding with screen size */
+    
+    font-family: "Poppins", sans-serif;
+    border-left: max(3px, 0.5vw) solid #007bff; /* Ensures border scales properly */
+    word-wrap: break-word; /* Prevents text overflow */
+    white-space: normal; /* Ensures text wraps properly */
+}
+
+/* Navigation Buttons */
+.prev-btn, .next-btn {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+}
+
+.prev-btn:hover, .next-btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Button Position */
+.prev-btn { left: 5px; }
+.next-btn { right: 5px; }
+
+
+.modal {
+    display: none;
+    position: fixed;
+    width: min(90%, 600px); /* Adapts width dynamically, max 600px */
+    height: min(80vh, 450px); /* Ensures it scales within 80% of viewport height */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: clamp(10px, 2vw, 20px); /* Responsive padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-height: 90vh; /* Prevents overflow on small screens */
+    overflow-y: auto; /* Allows scrolling if content overflows */
+}
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .modal button {
+        background: transparent;
+        color: red;
+        font-size: 22px;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .lottie-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px; /* Space between animation and content */
+    }
+
+    #modal-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #E74C3C;
+    }
+
+    #modal-description {
+        font-size: 16px;
+        padding: 10px;
+        max-width: 90%;
+        text-align: center;
+    }
+/* _______________________________ */
+/* Claims & Requests */
+.claims-container {
+    width: 100%;
+    height: min(15vh, 80px); /* Adapts height dynamically while capping at 80px */
+    display: flex;
+    gap: clamp(4px, 1vw, 8px); /* Responsive spacing */
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa; /* Light grey to enhance neumorphism */
+    border-radius: 12px;
+    font-family: "Inter", sans-serif;
+    padding: clamp(3px, 1vw, 5px); /* Ensures padding scales */
+}
+    /* Claims & Status Sections */
+    .claims-section, .status-section {
+    flex: 2;
+    text-align: center;
+    font-size: clamp(14px, 2vw, 18px); /* Responsive font size */
+    font-weight: 600;
+    border-radius: 10px;
+    padding: clamp(4px, 1vw, 6px); /* Responsive padding */
+    height: min(12vh, 70px); /* Adapts height while capping at 70px */
+    box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.5),
+                inset -3px -3px 5px rgba(0, 0, 0, 0.05); /* Soft outer shadow */
+}
+
+    /* Claims Section with Blue Theme */
+    .claims-section {
+        background: rgba(0, 123, 255, 0.2);
+        color: #007bff;
+    }
+
+    /* Status Section with Green Theme */
+    .status-section {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+
+    /* Headings & Text */
+    .claims-section h3, .status-section h3 {
+        font-size: 16px;
+        margin-bottom: 3px;
+        font-weight: 700;
+    }
+
+    .claims-section p, .status-section p {
+        font-size: 12px;
+        margin: 0;
+        font-weight: 500;
+    }
+/* ____________________________________ */
+/* Glassmorphic Timesheet Container */
+.timesheet-container {
+        flex: 2;
+        text-align: center;
+        font-family: "Inter", sans-serif;
+        margin: 0px auto;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255); /* Subtle transparent effect */
+        box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.5),
+        inset -3px -3px 5px rgba(0, 0, 0, 0.05); /* Soft outer shadow */
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Title Styling */
+    .timesheet-title {
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+
+    /* Glassmorphic Grid */
+    .timesheet-grid {
+        width: 100%;
+        max-height: 195px;
+        border-radius: 10px;
+        overflow-y: scroll;
+        background: rgba(255, 255, 255, 0.4); /* Soft frosted glass effect */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.03), 
+                    -3px -3px 5px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Grid Header */
+    .grid-header {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        background: rgba(240, 240, 240, 0.7);
+        color: #333;
+        text-align: center;
+        padding: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Compact Rows */
+    .grid-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Row Styling */
+    .grid-row {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        text-align: center;
+        padding: 7px;
+        font-size: 12px;
+        font-weight: 500;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        transition: background 0.2s ease;
+        cursor: pointer;
+    }
+
+    /* Alternating Rows */
+    .grid-row:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Hover Effect */
+    .grid-row:hover {
+        background: rgba(240, 240, 240, 0.6);
+    }
+
+    /* Neumorphic Status Labels */
+    .status-approved, .status-pending, .status-rejected {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
+        box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.5),
+                    inset -3px -3px 5px rgba(0, 0, 0, 0.05);
+        font-size: 11px;
+    }
+
+    .status-approved {
+        color: #28a745;
+        background: rgba(40, 167, 69, 0.2);
+    }
+
+    .status-pending {
+        color: #ffc107;
+        background: rgba(255, 193, 7, 0.2);
+    }
+
+    .status-rejected {
+        color: #dc3545;
+        background: rgba(220, 53, 69, 0.2);
+    }
+/* Filter Container */
+/* === Filter Container === */
+.filter-container {
+    position: absolute;
+    right: 3%;
+    bottom: 30%;
+    display: inline-block;
+}
+
+.filter-toggle {
+    position: relative; /* Needed for tooltip */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #f4c20d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect */
+.filter-toggle:hover {
+    background: #d8a500;
+}
+
+/* === Tooltip Styling === */
+.tooltip {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, transform 0.2s;
+}
+
+/* Show tooltip on hover */
+.filter-toggle:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.filter-toggle i {
+    font-size: 18px;
+}
+
+/* === Filter Form === */
+.filter-form {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    flex-direction: column;
+    min-width: 220px;
+}
+
+/* === Form Labels & Select Fields === */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.filter-group select {
+    padding: 6px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    color: #333;
+    outline: none;
+    transition: 0.2s;
+}
+
+.filter-group select:focus {
+    border-color: #555;
+}
+
+/* === Apply Filter Button === */
+.apply-filter {
+    background: #4CAF50;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.apply-filter i {
+    margin-right: 6px;
+}
+
+.apply-filter:hover {
+    background: #388E3C;
+}
+
+/* === Responsive Styles (Small Screens) === */
+@media (max-width: 768px) {
+    .filter-form {
+        top: 50px;
+        right: 0;
+        width: 200px;
+    }
+
+    .filter-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+}
+
+    </style>
+    <body>
+        <div class="overlay">
+            <div class="lottie-container">
+                <lottie-player class="mic" src="{% static 'gtn.json' %}" background="transparent" speed="1" loop autoplay 
+                    style="width: 250px; height: 250px;"></lottie-player>
+            </div>
+            <h1> Powered by GTN</h1>
+        </div>
+        <div class="header">
+            <div class="floating-menu">
+                <h3 class="floating-brand">GTN Info Solution</h3>
+            </div>
+            <div class="hey">
+                <h2>Hello! <span id="a">{{ fullname }}</span></h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="What can we help you with?" onkeyup="searchWebsite()">
+                    <i class="bi bi-search search-icon"></i>
+                    <div class="search-dropdown" id="searchDropdown"></div>
+                </div>
+            </div>
+            <div class="actions">
+                <i class="bi bi-arrow-clockwise" id="refreshButton" class="refresh-btn"></i>
+            
+                <!-- Notifications -->
+                <i class="bi bi-bell"><span id="notifCount" class="count-badge">3</span></i>
+                <div id="notifDropdownMenu" class="dropdownMenu">
+                    <p class="dropdown-header">Notifications</p>
+                    <div class="dropdown-item">📢 System Update Available</div>
+                    <div class="dropdown-item">🚀 New Feature Released</div>
+                    <div class="dropdown-item">✅ Your request has been approved</div>
+                    <hr>
+                    <p class="dropdown-footer">View All</p>
+                </div>
+            
+                <!-- Messages -->
+                <i class="bi bi-envelope"><span id="msgCount" class="count-badge">2</span></i>
+                <div id="msgDropdownMenu" class="dropdownMenu">
+                    <p class="dropdown-header">Messages</p>
+                    <div class="dropdown-item">📩 John: "Meeting at 3 PM?"</div>
+                    <div class="dropdown-item">📩 HR: "Reminder: Submit your timesheet"</div>
+                    <hr>
+                    <p class="dropdown-footer">View All</p>
+                </div>
+            
+                <!-- User Profile -->
+                <img src="{{ profile_photo }}">
+                <div id="userDropdownMenu" class="dropdownMenu">
+                    <a href="{% url 'profile' %}">👤 Profile</a>
+                    <a href="{% url 'logout' %}">🚪Logout</a>
+                </div>
+            </div>
+            
+            <div class="filter-container">
+                <!-- Toggle Button -->
+                <button id="filterToggle" class="filter-toggle">
+                    <i class="fas fa-sliders-h"></i>
+                    <span class="tooltip">Filter Months</span>
+                </button>
+            
+                <!-- Filter Form -->
+                <form method="GET" action="{% url 'ehome' %}" class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="month">Month:</label>
+                        <select name="month">
+                            {% for month_value, month_display in months %}
+                                <option value="{{ month_value }}" {% if month_value == attendance_summary.selected_month %}selected{% endif %}>
+                                    {{ month_display }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            
+                    <div class="filter-group">
+                        <label for="year">Year:</label>
+                        <select name="year">
+                            {% for year_value, year_display in years %}
+                                <option value="{{ year_value }}" {% if year_value == attendance_summary.selected_year %}selected{% endif %}>
+                                    {{ year_display }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            
+                    <button type="submit" class="apply-filter">
+                        <i class="fas fa-check"></i> Apply
+                    </button>
+                </form>
+            </div>
+            
+            
+            <!-- FontAwesome for Icons -->
+            <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
+            
+
+                <div class="container-row">
+                    <div class="info-container" onclick="openattnModal('presentModal')">
+                        <i class="bi bi-calendar-check"></i>
+                        <span class="leave-type">Present</span>
+                        <span class="leave-count"><strong>{{ attendance_summary.total_present }}</strong></span>
+                    </div>
+                    <div class="info-container"  onclick="openattnModal('payableModal')">
+                        <i class=" bi bi-calendar-x"></i>
+                        <span class="leave-type">Payable Leave</span>
+                        <span class="leave-count"><strong>{{ attendance_summary.payable_leaves }}</strong></span>
+                    </div>
+                    <div class="info-container" onclick="openattnModal('holidayModal')">
+                        <i class="bi bi-sun"></i>
+                        <span class="leave-type">Holiday</span>
+                        <span class="leave-count"><strong>{{ attendance_summary.total_holidays }}</strong> Days</span>
+                    </div>
+                    <div class="info-container" onclick="openattnModal('woModal')">
+                        <i class="bi bi-calendar-week"></i>
+                        <span class="leave-type">Week Off</span>
+                        <span class="leave-count"><strong>{{ attendance_summary.wo_count }}</strong> Days</span>
+                    </div>
+                    <div class="info-container"  onclick="openattnModal('absentModal')">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="leave-type">Loss of Pay</span>
+                        <span class="leave-count"><strong>{{ attendance_summary.total_absent }}</strong></span>
+                    </div>
+                </div>
+                
+        </div>
+      <!-- -------__________________________________________________ -->
+   
+    <!-- Present Dates & Shifts Modal -->
+    <div class="attnmodal" id="presentModal">
+        <div class="attnmodal-content p-4 rounded shadow bg-white">
+            <span class="attnclose-btn text-danger fs-4" onclick="closeattnModal('presentModal')">&times;</span>
+            <h5 class="text-center text-primary fw-bold">Present Dates & Shifts</h5>
+    
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+                <table id="presentModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                    <thead class="table-light"   style="position: sticky; top: 0; background: white; z-index: 10;">
+                        <tr class="text-center">
+                            <th onclick="sortTable(this, 'presentModalTable')">Date &#x25B2;&#x25BC;</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Per Hours</th>
+                            <th>Regular OT</th>
+                            <th>Must Attend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, shift, checkin, checkout, perhrs, regot, mustattn in attendance_summary.present_dates %}
+                            <tr class="text-center">
+                                <td>{{ date }}</td>
+                                <td>{{ checkin|default:"-" }}</td>
+                                <td>{{ checkout|default:"-" }}</td>
+                                <td>{{ perhrs|default:"-" }}</td>
+                                <td>{{ regot|default:"-" }}</td>
+                                <td>{{ mustattn|default:"-" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr class="text-center">
+                                <td colspan="6" class="text-danger fw-bold">No Records Found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Payable Leaves Modal -->
+<div class="attnmodal" id="payableModal">
+    <div class="attnmodal-content p-4 rounded shadow bg-white">
+        <span class="attnclose-btn text-danger fs-4" onclick="closeattnModal('payableModal')">&times;</span>
+        <h5 class="text-center text-primary fw-bold">Payable Leaves & Shifts</h5>
+        <p class="text-center fw-bold">
+            Total Payable Leaves (CL + EL): <span class="text-success">{{ attendance_summary.payable_leaves }}</span>
+        </p>
+
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+            <table id="payableModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-light"  style="position: sticky; top: 0; background: white; z-index: 10;">
+                    <tr class="text-center">
+                        <th onclick="sortTable(this, 'payableModalTable')">Date &#x25B2;&#x25BC;</th>
+                        <th>FN/AN</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Per Hours</th>
+                        <th>Regular OT</th>
+                        <th>Must Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, anl, fnl, checkin, checkout, perhrs, regot, mustattn in attendance_summary.cl_el_records %}
+                        <tr class="text-center">
+                            <td>{{ date }}</td>
+                            <td>{{ anl }}{% if fnl %} / {{ fnl }}{% endif %}</td>
+                            <td>{{ checkin|default:"-" }}</td>
+                            <td>{{ checkout|default:"-" }}</td>
+                            <td>{{ perhrs|default:"-" }}</td>
+                            <td>{{ regot|default:"-" }}</td>
+                            <td>{{ mustattn|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="text-center">
+                            <td colspan="7" class="text-danger fw-bold">No Records Found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- WO Dates Modal -->
+<div class="attnmodal" id="woModal">
+    <div class="attnmodal-content p-4 rounded shadow bg-white">
+        <span class="attnclose-btn text-danger fs-4" onclick="closeattnModal('woModal')">&times;</span>
+        <h5 class="text-center text-primary fw-bold">Weekly Off (WO) Dates</h5>
+
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+            <table id="woModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 10;">
+                    <tr class="text-center">
+                        <th onclick="sortTable(this, 'woModalTable')">Date &#x25B2;&#x25BC;</th>
+                        <th>Leave</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Per Hours</th>
+                        <th>OT</th>
+                        <th>Must Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, anl, fnl, checkin, checkout, perhrs, regot, mustattn in attendance_summary.wo_dates %}
+                        <tr class="text-center">
+                            <td>{{ date }}</td>
+                            <td>{{ anl }}</td>
+                            <td>{{ checkin|default:"-" }}</td>
+                            <td>{{ checkout|default:"-" }}</td>
+                            <td>{{ perhrs|default:"-" }}</td>
+                            <td>{{ regot|default:"-" }}</td>
+                            <td>{{ mustattn|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="text-center">
+                            <td colspan="7" class="text-danger fw-bold">No Records Found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Absent Dates Modal -->
+<div class="attnmodal" id="absentModal">
+    <div class="attnmodal-content p-4 rounded shadow bg-white">
+        <span class="attnclose-btn text-danger fs-4" onclick="closeattnModal('absentModal')">&times;</span>
+        <h5 class="text-center text-primary fw-bold">Absent Days</h5>
+
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+            <table id="absentModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 10;">
+                    <tr class="text-center">
+                        <th onclick="sortTable(this, 'absentModalTable')">Date &#x25B2;&#x25BC;</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Per Hours</th>
+                        <th>OT</th>
+                        <th>Must Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, anl, fnl, checkin, checkout, perhrs, regot, mustattn in attendance_summary.absent_dates %}
+                        <tr class="text-center">
+                            <td>{{ date }}</td>
+                            <td>{{ checkin|default:"-" }}</td>
+                            <td>{{ checkout|default:"-" }}</td>
+                            <td>{{ perhrs|default:"-" }}</td>
+                            <td>{{ regot|default:"-" }}</td>
+                            <td>{{ mustattn|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="text-center">
+                            <td colspan="6" class="text-danger fw-bold">No Records Found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- NH + FH Holidays Modal -->
+<div class="attnmodal" id="holidayModal">
+    <div class="attnmodal-content p-4 rounded shadow bg-white">
+        <span class="attnclose-btn text-danger fs-4" onclick="closeattnModal('holidayModal')">&times;</span>
+        <h5 class="text-center text-primary fw-bold">NH & FH Holidays</h5>
+
+        <!-- National Holidays (NH) -->
+        <h6 class="fw-bold text-secondary text-center mt-3">National Holidays (NH)</h6>
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+            <table id="holidayNHModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 10;">
+                    <tr class="text-center">
+                        <th onclick="sortTable(this, 'holidayNHModalTable')">Date &#x25B2;&#x25BC;</th>
+                        <th>Leave</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Per Hours</th>
+                        <th>OT</th>
+                        <th>Must Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, anl, fnl, checkin, checkout, perhrs, regot, mustattn in attendance_summary.nh_dates %}
+                        <tr class="text-center">
+                            <td>{{ date }}</td>
+                            <td>{{ anl }}</td>
+                            <td>{{ checkin|default:"-" }}</td>
+                            <td>{{ checkout|default:"-" }}</td>
+                            <td>{{ perhrs|default:"-" }}</td>
+                            <td>{{ regot|default:"-" }}</td>
+                            <td>{{ mustattn|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="text-center">
+                            <td colspan="7" class="text-danger fw-bold">No Records Found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Festival Holidays (FH) -->
+        <h6 class="fw-bold text-secondary text-center mt-4">Festival Holidays (FH)</h6>
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+            <table id="holidayFHModalTable" class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 10;">
+                    <tr class="text-center">
+                        <th onclick="sortTable(this, 'holidayFHModalTable')">Date &#x25B2;&#x25BC;</th>
+                        <th>Leave</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Per Hours</th>
+                        <th>OT</th>
+                        <th>Must Attend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, anl, fnl, checkin, checkout, perhrs, regot, mustattn in attendance_summary.fh_dates %}
+                        <tr class="text-center">
+                            <td>{{ date }}</td>
+                            <td>{{ anl }}</td>
+                            <td>{{ checkin|default:"-" }}</td>
+                            <td>{{ checkout|default:"-" }}</td>
+                            <td>{{ perhrs|default:"-" }}</td>
+                            <td>{{ regot|default:"-" }}</td>
+                            <td>{{ mustattn|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="text-center">
+                            <td colspan="7" class="text-danger fw-bold">No Records Found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <!-- _________________________________________________ -->
+        <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">☰</button>
+        <div class="sidebar" id="sidebar">
+            <div class="profile">
+                <img src="{{ profile_photo }}">
+                <h4>{{ fullname }}</h4>
+                <p class="usr">Emp No: {{ username }}</p>
+                <p class="usr">{{ desig_name }}</p>
+            </div>
+            <div class="menu">
+                <a href="{% url 'profile' %}"><i class="bi bi-person"></i> My Profile</a>
+                
+                <a href="{% url 'attendance' %}"><i class="bi bi-clock"></i> My Attendance</a>
+                <a href="{% url 'documents' %}"><i class="bi bi-folder"></i> My Documents</a>
+                <a href="{% url 'payroll' %}"><i class="bi bi-cash"></i> Payslip</a>
+                <a href="{% url 'leavemanagement' %}"><i class="bi bi-file-earmark-check"></i> Leave Management</a>
+                <a href="{% url 'loanapplications' %}"><i class="bi bi-bank"></i> My Loans</a>
+                <a href="{% url 'claims' %}"><i class="bi bi-person-lines-fill"></i> Claims</a>
+                <a href="{% url 'requeststatus' %}"><i class="bi bi-envelope-check"></i> Request Status</a>
+                
+                <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                
+            </div>
+        </div>
+        <hr class="divider">
+        <div class="main_content">
+            <div class="calendar small-container">
+                <div class="calendar-header">
+                    <button onclick="prevMonth()">&#10094;</button>
+                    <h3 id="month-year"></h3>
+                    <button onclick="nextMonth()">&#10095;</button>
+                </div>
+                <div class="calendar-days" id="calendar"></div>
+            </div>
+            
+            <div class="Dash">
+                <div class="notice-board">
+                    <h3 class="notice-title">📢 Notice Board</h3>
+                    <div class="notice-container">
+                        <button class="prev-btn">&#10094;</button>
+                        <div class="notice-slider">
+                            <div class="notice-item" data-description="Full details about Announcement">Important Announcement</div>
+                            <div class="notice-item" data-description="Full details about New Feature Update">New Feature Update</div>
+                            <div class="notice-item" data-description="Full details about Scheduled Maintenance">Scheduled Maintenance</div>
+                            <div class="notice-item" data-description="Full details about Employee of the Month">Employee of the Month</div>
+                        </div>
+                        <button class="next-btn">&#10095;</button>
+                    </div>
+                </div>
+                <div class="claims-container">
+                    <a href="{% url 'claims' %}" class="claims-section" style="text-decoration: none; color: inherit; display: block;">
+                        <h3>My Claims</h3>
+                        <p>Total Claims: <span id="totalClaims">12</span></p>
+                    </a>
+                    <a href="{% url 'requeststatus' %}" class="status-section" style="text-decoration: none; color: inherit; display: block;">
+                        <h3>My Request</h3>
+                        <p>Status: <span id="requestStatus">Approved ✅</span></p>
+                    </a>
+                </div>
+            </div>
+            <div class="timesheet-container">
+                <h2 class="timesheet-title">📌 Attendance Timesheet</h2>
+                <div class="timesheet-grid">
+                    <div class="grid-header">
+                        <div onclick="sortGrid()" style="cursor: pointer;">Date ⬍</div>
+                        <div>Check-In</div>
+                        <div>Check-Out</div>
+                        <div>OT</div>
+                        <div>Attn</div>
+                    </div>
+                    <div class="grid-body" id="gridBody">
+                        {% for entry in timesheet_data %}
+                        <div class="grid-row">
+                            <div>{{ entry.date }}</div>
+                            <div>{{ entry.checkin }}</div>
+                            <div>{{ entry.checkout }}</div>
+                            <div>{{ entry.regot }}</div>
+                            <div class="status-approved">{{ entry.mustattn }}</div>
+                        </div>    
+                        {% empty %}
+                        <div class="grid-row">
+                            <div>No records found.</div>
+                        </div>   
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div id="popup" class="popup"></div>
+
+        </div>
+        <div class="modal-overlay"></div>
+    <div class="modal">
+        <button onclick="closeModal()"><i class="bi bi-x-square-fill"></i></button>
+        
+        <div class="lottie-container">
+            <lottie-player class="mic" src="{% static 'mic.json' %}" background="transparent" speed="1" loop autoplay 
+                style="width: 250px; height: 250px;"></lottie-player>
+        </div>
+    
+        <h3 id="modal-title"></h3>
+        <p id="modal-description"></p>
+    </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    const searchLinks = [
+    { name: "Home", url: "/ehome" },
+    { name: "Attendance Timesheet", url: "/attendance" },
+    { name: "profile", url: "/profile" },
+    { name: "Payroll", url: "/payroll" },
+    { name: "Leave Management", url: "/leave" },
+    { name: "Claims", url: "/claims" },
+    { name: "My Documents", url: "/documents" },
+    { name: "Support", url: "/support" }
+];
+
+function searchWebsite() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let dropdown = document.getElementById("searchDropdown");
+    
+    // Clear previous results
+    dropdown.innerHTML = "";
+
+    if (input.trim() === "") {
+        dropdown.style.display = "none";
+        return;
+    }
+
+    // Filter links based on input
+    let filteredLinks = searchLinks.filter(link => link.name.toLowerCase().includes(input));
+
+    // Show results in dropdown
+    if (filteredLinks.length > 0) {
+        dropdown.style.display = "block";
+        filteredLinks.forEach(link => {
+            let item = document.createElement("div");
+            item.classList.add("dropdown-item");
+            item.innerHTML = link.name;
+            item.onclick = () => window.location.href = link.url;
+            dropdown.appendChild(item);
+        });
+    } else {
+        dropdown.style.display = "none";
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector(".search-input");
+    let dropdown = document.querySelector(".search-dropdown");
+
+    if (!searchInput || !dropdown) return;
+
+    // Move dropdown outside of the header to avoid stacking issues
+    document.body.appendChild(dropdown);
+
+    searchInput.addEventListener("focus", function () {
+        const rect = searchInput.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
+        dropdown.style.width = `${rect.width}px`;
+        dropdown.style.display = "block";
+    });
+
+    searchInput.addEventListener("blur", function () {
+        setTimeout(() => {
+            dropdown.style.display = "none";
+        }, 200);
+    });
+});
+
+
+        let isAscending = true;
+
+function sortGrid() {
+    const gridBody = document.getElementById("gridBody");
+    const rows = Array.from(gridBody.getElementsByClassName("grid-row"));
+
+    rows.sort((rowA, rowB) => {
+        let dateA = new Date(rowA.children[0].textContent.trim());
+        let dateB = new Date(rowB.children[0].textContent.trim());
+
+        return isAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    rows.forEach(row => gridBody.appendChild(row));
+    
+    isAscending = !isAscending;
+}
+    document.addEventListener("DOMContentLoaded", function () {
+    const filterButton = document.getElementById("filterToggle");
+    const filterForm = document.getElementById("filterForm");
+
+    filterButton.addEventListener("click", function (event) {
+        event.stopPropagation(); // Prevent click from triggering close event
+        filterForm.style.display = (filterForm.style.display === "flex") ? "none" : "flex";
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!filterButton.contains(event.target) && !filterForm.contains(event.target)) {
+            filterForm.style.display = "none";
+        }
+    });
+});
+
+          document.addEventListener("DOMContentLoaded", function () {
+        // Check if overlay has already been displayed
+        if (localStorage.getItem("overlayShown")) {
+            document.querySelector(".overlay").style.display = "none";
+        } else {
+            // Set flag to indicate overlay has been shown
+            localStorage.setItem("overlayShown", "true");
+        }
+    });
+        function openattnModal(id) {
+            document.getElementById(id).style.display = "block";
+        }
+        function closeattnModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+        window.onclick = function(event) {
+            let modals = document.querySelectorAll('.attnmodal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+         
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const toggleBtn = document.getElementById("toggleBtn");
+
+            if (sidebar.classList.contains("show")) {
+                sidebar.classList.remove("show");
+                toggleBtn.style.left = "5px"; // Move back to original position
+                toggleBtn.innerHTML = "☰"; // Change icon back to menu
+            } else {
+                sidebar.classList.add("show");
+                toggleBtn.style.left = "200px"; // Move along with sidebar
+                toggleBtn.innerHTML = "✖"; // Change icon to close
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+    const bellIcon = document.querySelector(".bi-bell");
+    const msgIcon = document.querySelector(".bi-envelope");
+    const userIcon = document.querySelector(".actions img");
+
+    const notifDropdown = document.getElementById("notifDropdownMenu");
+    const msgDropdown = document.getElementById("msgDropdownMenu");
+    const userDropdown = document.getElementById("userDropdownMenu");
+
+    function closeAllDropdowns() {
+        document.querySelectorAll(".dropdownMenu").forEach(menu => {
+            menu.classList.remove("showDropdown");
+        });
+    }
+
+    function toggleDropdown(dropdown) {
+        const isOpen = dropdown.classList.contains("showDropdown");
+        closeAllDropdowns(); // Close all before opening a new one
+        if (!isOpen) {
+            dropdown.classList.add("showDropdown");
+        }
+    }
+
+    bellIcon.addEventListener("click", function (event) {
+        event.stopPropagation();
+        toggleDropdown(notifDropdown);
+    });
+
+    msgIcon.addEventListener("click", function (event) {
+        event.stopPropagation();
+        toggleDropdown(msgDropdown);
+    });
+
+    userIcon.addEventListener("click", function (event) {
+        event.stopPropagation();
+        toggleDropdown(userDropdown);
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".actions")) {
+            closeAllDropdowns();
+        }
+    });
+    
+
+    // Update notification and message count
+    function updateCounts() {
+        const notifCount = document.querySelector("#notifCount");
+        const msgCount = document.querySelector("#msgCount");
+
+        const notifItems = notifDropdown.querySelectorAll(".dropdown-item").length;
+        const msgItems = msgDropdown.querySelectorAll(".dropdown-item").length;
+
+        notifCount.textContent = notifItems > 0 ? notifItems : "";
+        msgCount.textContent = msgItems > 0 ? msgItems : "";
+    }
+
+    updateCounts(); // Run on page load
+});
+
+document.getElementById("refreshButton").addEventListener("click", function () {
+    location.reload(); // Refresh the page
+});  
+
+// __________________________________________________________________________________
+
+    
+const calendersheet = {{ calendersheet|safe }};
+
+const today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+const holidays = [
+    { day: 1, month: 1 },
+    { day: 25, month: 12 }
+];
+
+function renderCalendar(month, year) {
+    document.getElementById("month-year").innerText = `${year} - ${new Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(year, month))}`;
+    
+    const calendar = document.getElementById("calendar");
+    calendar.innerHTML = "";
+    
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+        calendar.innerHTML += `<div></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const isSunday = new Date(year, month, day).getDay() === 0;
+        const isHoliday = holidays.some(holiday => holiday.day === day && holiday.month === month + 1);
+
+        const classNames = `day ${isToday ? 'current-day' : ''} ${isSunday ? 'sunday' : ''} ${isHoliday ? 'holiday' : ''}`;
+
+        calendar.innerHTML += `<div class="${classNames}" onclick="showPopup(${day}, ${month + 1}, ${year})">${day}</div>`;
+    }
+}
+
+function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    renderCalendar(currentMonth, currentYear);
+}
+
+function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar(currentMonth, currentYear);
+}
+
+function showPopup(day, month, year) {
+    const formattedDate = `${String(day).padStart(2, '0')}/${new Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(year, month - 1))}/${year}`;
+
+    // Find timesheet data for the selected date
+    const timesheetEntry = calendersheet.find(entry => entry.date === formattedDate);
+
+    const popup = document.getElementById("popup");
+
+    if (timesheetEntry) {
+        popup.innerHTML = `
+            <p><strong>Date:</strong> ${timesheetEntry.date}</p>
+            <p><strong>Check-in:</strong> ${timesheetEntry.checkin}</p>
+            <p><strong>Check-out:</strong> ${timesheetEntry.checkout}</p>
+            <p><strong>Worked Hours:</strong> ${timesheetEntry.perhrs}</p>
+            <p><strong>Regular OT:</strong> ${timesheetEntry.regot}</p>
+            <p><strong>Leave Adjustment:</strong> ${timesheetEntry.la}</p>
+            <p><strong>Must Attend:</strong> ${timesheetEntry.mustattn}</p>
+            <button onclick="closePopup()">Close</button>
+        `;
+    } else {
+        popup.innerHTML = `
+            <p><strong>Date:</strong> ${formattedDate}</p>
+            <p>No attendance data available.</p>
+            <button onclick="closePopup()">Close</button>
+        `;
+    }
+
+    popup.style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+renderCalendar(currentMonth, currentYear);
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.querySelector(".notice-slider");
+    const notices = document.querySelectorAll(".notice-item");
+    const prevBtn = document.querySelector(".prev-btn");
+    const nextBtn = document.querySelector(".next-btn");
+    const modal = document.querySelector(".modal");
+    const overlay = document.querySelector(".modal-overlay");
+
+    let index = 0;
+    let autoSlide = setInterval(slideNotices, 3000);
+
+    function slideNotices() {
+        slider.style.transform = `translateX(-${index * 100}%)`;
+        index = (index + 1) % notices.length;
+    }
+
+    function showControls() {
+        clearInterval(autoSlide);
+        prevBtn.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    prevBtn.addEventListener("click", function () {
+        index = (index - 1 + notices.length) % notices.length;
+        slider.style.transform = `translateX(-${index * 100}%)`;
+    });
+
+    nextBtn.addEventListener("click", function () {
+        index = (index + 1) % notices.length;
+        slider.style.transform = `translateX(-${index * 100}%)`;
+    });
+
+    document.querySelector(".notice-container").addEventListener("click", showControls);
+
+    // Ensure modal is hidden on page load
+    modal.style.display = "none";
+    overlay.style.display = "none";
+
+    notices.forEach(item => {
+        item.addEventListener("click", function () {
+            document.getElementById("modal-title").textContent = this.textContent;
+            document.getElementById("modal-description").textContent = this.dataset.description;
+
+            modal.style.display = "flex"; // Open modal
+            overlay.style.display = "block";
+        });
+    });
+
+    function closeModal() {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    }
+
+    window.closeModal = closeModal;
+});
+function sortTable(header, tableId) {
+    let table = document.getElementById(tableId);
+    let tbody = table.getElementsByTagName("tbody")[0];
+    let rows = Array.from(tbody.getElementsByTagName("tr"));
+    let columnIndex = header.cellIndex;
+    let isAscending = header.getAttribute("data-order") !== "asc";
+
+    rows.sort((rowA, rowB) => {
+        let cellA = rowA.cells[columnIndex].innerText.trim();
+        let cellB = rowB.cells[columnIndex].innerText.trim();
+
+        let dateA = new Date(cellA);
+        let dateB = new Date(cellB);
+
+        if (isNaN(dateA) || isNaN(dateB)) {
+            return 0; // Skip sorting if date is invalid
+        }
+
+        return isAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+    header.setAttribute("data-order", isAscending ? "asc" : "desc");
+}
+    </script>

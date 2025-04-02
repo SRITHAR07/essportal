@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply New Leave</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 0.375rem;
+            --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --transition: all 0.3s ease;
+        }
+    
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+    
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #212529;
+            background-color: #f5f5f5;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+    
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+    
+        h1 {
+            color: var(--dark-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+        }
+    
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+    
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+    
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        }
+    
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+    
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+    
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+    
+        .inline-group {
+            flex: 1 1 200px;
+        }
+    
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .session-label {
+            margin-bottom: 0.5rem;
+        }
+    
+        .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+    
+        .checkbox-option input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+    
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+    
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+    
+        .back-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    
+        .submit-btn:hover {
+            background-color: #0069d9;
+        }
+    
+        .exit-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+            z-index: 1000;
+        }
+    
+        .exit-btn:hover {
+            color: var(--danger-color);
+        }
+    
+        .messages-container {
+            margin-bottom: 1.5rem;
+        }
+    
+        .messages {
+            list-style: none;
+        }
+    
+        .messages li {
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--border-radius);
+        }
+    
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+    
+            .form-row {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+    
+            .inline-group {
+                flex: 1 1 100%;
+            }
+    
+            .button-group {
+                justify-content: center;
+            }
+    
+            .button-group button {
+                width: 100%;
+            }
+        }
+    
+        @media (max-width: 576px) {
+            body {
+                padding: 0.5rem;
+            }
+    
+            .checkbox-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+    
+            input[type="text"],
+            input[type="date"],
+            input[type="number"],
+            select,
+            textarea {
+                padding: 0.5rem;
+            }
+        }
+    
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                font-size: 12pt;
+            }
+    
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+    
+            .button-group, .exit-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="exit-btn" onclick="exitPage()">X</button>
+    <div class="container">
+        <h1>Apply New Leave</h1>
+        
+        <!-- Messages display with auto-clear -->
+        {% if messages %}
+        <div class="messages-container">
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <script>
+                // Clear messages after 5 seconds
+                setTimeout(function() {
+                    document.querySelector('.messages-container').style.display = 'none';
+                }, 5000);
+            </script>
+        </div>
+        {% endif %}
+        
+        <form action="{% url 'apply_newleave' %}" method="post" enctype="multipart/form-data" id="leaveForm" onsubmit="return validateForm()">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="plantcode">Plant Code:</label>
+                    <input type="text" id="plantcode" name="plantcode" value="{{ plantcode }}" readonly required>
+                </div>
+            </div>
+            
+            <!-- Leave From with Session checkboxes -->
+            <div class="form-row">
+                <div class="form-group inline-group">
+                    <label for="leaveFrom">Leave From:</label>
+                    <input type="date" id="leaveFrom" name="lfrom" required onchange="validateDates()">
+                </div>
+                <div class="form-group inline-group checkbox-container">
+                    <label class="session-label">Session:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="fromfn" name="fromfn" checked onchange="updateLeaveTypes()">
+                            <span>Forenoon</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="froman" name="froman" checked onchange="updateLeaveTypes()">
+                            <span>Afternoon</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group inline-group">
+                    <label for="fnlcode">Leave Type (FN):</label>
+                    <select id="fnlcode" name="fnlcode">
+                        <option value="AB">Select Leave Type</option>
+                        {% for leave in leave_types %}
+                        <option value="{{ leave.lcode }}">{{ leave.lcode }}</option>
+                        {% endfor %}
+                    </select>
+                </div>              
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group inline-group">
+                    <label for="leaveTo">Leave To:</label>
+                    <input type="date" id="leaveTo" name="lto" required onchange="validateDates()">
+                </div>
+                <div class="form-group inline-group checkbox-container">
+                    <label class="session-label">Session:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="tofn" name="tofn" checked onchange="updateLeaveTypes()">
+                            <span>Forenoon</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="toan" name="toan" checked onchange="updateLeaveTypes()">
+                            <span>Afternoon</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group inline-group">
+                    <label for="anlcode">Leave Type (AN):</label>
+                    <select id="anlcode" name="anlcode">
+                        <option value="AB">Select Leave Type</option>
+                        {% for leave in leave_types %}
+                        <option value="{{ leave.lcode }}">{{ leave.lcode }}</option>
+                        {% endfor %}
+                    </select>
+                </div>             
+            </div>
+
+            <div class="form-group">
+                <label for="leavebal">Leave Balance:</label>
+                <input type="number" id="leavebal" name="leavebal" step="0.01" 
+                       value="{{ leave_balance|default:0 }}" readonly required>
+            </div>
+
+            <div class="form-group">
+                <label for="totldays">Total Days:</label>
+                <input type="number" id="totldays" name="totldays" step="0.01" readonly required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachment">Attachment:</label>
+                <input type="file" id="attachment" name="attachment" accept="image/*">
+                <button type="button" onclick="openCamera()">
+                    📷 Capture Image
+                </button>
+                <video id="camera" style="display:none; width:100%;" autoplay></video>
+                <button id="captureButton" style="display:none;" onclick="capturePhoto()">Take Photo</button>
+                <canvas id="canvas" style="display:none;"></canvas>
+            </div>
+            
+
+            <div class="form-group button-group">
+                <button type="button" class="back-btn" id="saveDraftBtn">Save to Draft</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+                <input type="hidden" id="action" name="action" value="submit">
+            </div>
+        </form>
+    </div>
+    <script>
+         function openCamera() {
+        let video = document.getElementById('camera');
+        let captureButton = document.getElementById('captureButton');
+        let constraints = { video: { facingMode: 'environment' } };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function(stream) {
+                video.style.display = 'block';
+                captureButton.style.display = 'block';
+                video.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error('Error accessing the camera:', error);
+            });
+    }
+
+    function capturePhoto() {
+        let video = document.getElementById('camera');
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob(function(blob) {
+            let file = new File([blob], "captured_image.jpg", { type: "image/jpeg" });
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById('attachment').files = dataTransfer.files;
+        }, "image/jpeg");
+        
+        video.style.display = 'none';
+        document.getElementById('captureButton').style.display = 'none';
+    }
+        // Function to update leave type fields based on session selection
+        function updateLeaveTypes() {
+            const fromFn = document.getElementById('fromfn');
+            const fromAn = document.getElementById('froman');
+            const fnlcodeSelect = document.getElementById('fnlcode');
+            const anlcodeSelect = document.getElementById('anlcode');
+            
+            if (fromFn.checked && !fromAn.checked) {
+                anlcodeSelect.value = 'AB';
+                anlcodeSelect.disabled = true;
+                fnlcodeSelect.disabled = false;
+            } 
+            else if (!fromFn.checked && fromAn.checked) {
+                fnlcodeSelect.value = 'AB';
+                fnlcodeSelect.disabled = true;
+                anlcodeSelect.disabled = false;
+            }
+            else {
+                fnlcodeSelect.disabled = false;
+                anlcodeSelect.disabled = false;
+            }
+            
+            validateDates();
+        }
+    
+        // Form validation
+        function validateForm() {
+            const leaveFrom = document.getElementById('leaveFrom').value;
+            const leaveTo = document.getElementById('leaveTo').value;
+            const fnlcode = document.getElementById('fnlcode').value;
+            const anlcode = document.getElementById('anlcode').value;
+            const fromFn = document.getElementById('fromfn').checked;
+            const fromAn = document.getElementById('froman').checked;
+            const totalDays = parseFloat(document.getElementById('totldays').value) || 0;
+            const leaveBalance = parseFloat(document.getElementById('leavebal').value) || 0;
+            
+            if (!leaveFrom || !leaveTo) {
+                alert("Please select both From and To dates");
+                return false;
+            }
+            
+            // Session validation
+            if (fromFn && !fromAn) {
+                if (!fnlcode || fnlcode === 'AB') {
+                    alert("Please select a valid Forenoon leave type");
+                    return false;
+                }
+            } 
+            else if (!fromFn && fromAn) {
+                if (!anlcode || anlcode === 'AB') {
+                    alert("Please select a valid Afternoon leave type");
+                    return false;
+                }
+            } 
+            else if (fromFn && fromAn) {
+                if (!fnlcode || fnlcode === 'AB' || !anlcode || anlcode === 'AB') {
+                    alert("Please select valid leave types for both sessions");
+                    return false;
+                }
+                if (leaveFrom !== leaveTo && fnlcode !== anlcode) {
+                    alert("For multiple days leave, Forenoon and Afternoon leave types must be the same");
+                    return false;
+                }
+            }
+            else {
+                alert("Please select at least one session (Forenoon or Afternoon)");
+                return false;
+            }
+            
+            // Special leave types validation
+            const specialLeaves = ['SL', 'ML'];
+            if ((specialLeaves.includes(fnlcode) || specialLeaves.includes(anlcode)) && fnlcode !== anlcode) {
+                alert("Sick Leave (SL) and Maternity Leave (ML) cannot be combined with other leave types");
+                return false;
+            }
+            
+            // Numerical validation
+            if (isNaN(totalDays) || totalDays <= 0) {
+                alert("Invalid leave duration. Please check your dates and sessions");
+                return false;
+            }
+            
+            if (totalDays > leaveBalance) {
+                alert(`You don't have enough leave balance (${leaveBalance} days) for this application (${totalDays} days requested)`);
+                return false;
+            }
+            
+            return true;
+        }
+    
+        // Function to validate dates and calculate total days
+        function validateDates() {
+            const leaveFrom = document.getElementById('leaveFrom').value;
+            const leaveTo = document.getElementById('leaveTo').value;
+            
+            if (leaveFrom && leaveTo) {
+                const fromDate = new Date(leaveFrom);
+                const toDate = new Date(leaveTo);
+                
+                if (fromDate > toDate) {
+                    alert("Leave To date must be after Leave From date");
+                    document.getElementById('leaveTo').value = '';
+                    document.getElementById('totldays').value = '';
+                    return;
+                }
+                
+                const timeDiff = toDate - fromDate;
+                const daysDiff = timeDiff / (1000 * 60 * 60 * 24) + 1;
+                
+                const fromFn = document.getElementById('fromfn').checked;
+                const fromAn = document.getElementById('froman').checked;
+                const toFn = document.getElementById('tofn').checked;
+                const toAn = document.getElementById('toan').checked;
+                
+                let totalDays = 0;
+                
+                if (daysDiff === 1) {
+                    if (fromFn && fromAn) {
+                        totalDays = 1;
+                    } else if (fromFn || fromAn) {
+                        totalDays = 0.5;
+                    }
+                } else {
+                    if (fromFn && fromAn) totalDays += 1;
+                    else if (fromFn || fromAn) totalDays += 0.5;
+                    
+                    if (toFn && toAn) totalDays += 1;
+                    else if (toFn || toAn) totalDays += 0.5;
+                    
+                    if (daysDiff > 2) totalDays += (daysDiff - 2);
+                }
+                
+                document.getElementById('totldays').value = totalDays.toFixed(2);
+                
+                // Check against leave balance
+                const leaveBalance = parseFloat(document.getElementById('leavebal').value) || 0;
+                if (totalDays > leaveBalance) {
+                    document.getElementById('totldays').style.borderColor = "red";
+                } else {
+                    document.getElementById('totldays').style.borderColor = "";
+                }
+            }
+        }
+    
+        // Initialize the form
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLeaveTypes();
+            
+            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+                document.getElementById('action').value = 'draft';
+                if (validateForm()) {
+                    document.getElementById('leaveForm').submit();
+                }
+            });
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('leaveFrom').value = today;
+            
+            validateDates();
+        });
+    
+        function exitPage() {
+            window.location.href = "{% url 'leavemanagement' %}";
+        }
+    </script>
+</body>
+</html>

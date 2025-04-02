@@ -1,0 +1,565 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Attendance</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        *{
+            font-family: "Quicksand", sans-serif;
+            font-optical-sizing: auto;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding-top: 0;
+            
+        }
+        
+        .header {
+            background: #FFC107;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            margin-bottom: 20px;
+            padding: -20px -20px 0 -20px;
+            align-items: center;
+            z-index: 1000;
+            justify-content: space-between;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+        
+        .back-button {
+            font-size: 22px;
+            color: #f4c20d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-button:hover {
+            color: #d1a70b;
+        }
+
+        /* Filter Form Styling */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-form label {
+            font-weight: bold;
+        }
+
+        .filter-form select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-form button {
+            background: #ffa751;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .filter-form button:hover {
+            background: #ff7b00;
+        }
+
+        /* Mobile Toggle Button */
+        .filter-toggle {
+            display: none;
+            background: #ffa751;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .filter-toggle i {
+            font-size: 18px;
+        }
+        /* Main chart container */
+        .chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 15px;
+    width: 95%;
+    background: white;
+    padding: 0px;
+    border-radius: 12px;
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    border: 2px solid #f4d03e;
+}
+/* Chart box with max-width constraints */
+.chart-box {
+    width: 60%;
+    max-width: 60%;
+    min-width: 300px;
+    height: auto;
+    background: transparent;
+    border-radius: 12px;
+    display: flex;
+    padding: 5px;
+    padding-top: 0%;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+}
+/* 🎨 Modern and Glassmorphic Cards Container */
+.main_content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamically adjusts */
+    gap: 16px;
+    margin: 30px;
+    padding: 20px;
+    background:whitesmoke; 
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 📌 Glassmorphic Card Styling */
+.main_content > div {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+}
+.main_content > div::before{
+    content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+
+}
+.main_content > div:hover::before{
+    transform: scaleX(1);
+    transform-origin: left;
+}
+.main_content > div:hover{
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+.main_content > div::after{
+    content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.1));
+            z-index: -2;
+}
+
+/* 🎨 Subtle Background Colors with Matching Text/Icon Colors */
+.present { background: linear-gradient(135deg, #00b09b, #96c93d);
+            border-left: 4px solid #96c93d;
+            border-bottom: 4px solid #00b09b;}
+.lop {background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            border-left: 4px solid #FF4B2B;
+            border-bottom: 4px solid #FF416C;}
+.pl {background: linear-gradient(135deg, #FF8008, #FFC837);
+            border-left: 4px solid #FFC837;
+            border-bottom: 4px solid #FF8008;
+}
+.wo {background: linear-gradient(135deg, #36D1DC, #5B86E5);
+            border-left: 4px solid #5B86E5;
+            border-bottom: 4px solid #36D1DC;}
+.hl {background: linear-gradient(135deg, #b9fff6, #00dec8);
+            border-left: 4px solid #00dec8;
+            border-bottom: 4px solid #b9fff6;}
+.ot {background: linear-gradient(135deg, #fe7cf1, #df29ff);
+            border-left: 4px solid #df29ff;
+            border-bottom: 4px solid #fe7cf1;}
+
+/* 📌 Icon and Title Styling */
+.stat-title {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    color: inherit;
+    text-transform: uppercase;
+}
+
+/* 🎨 Unique Icon Colors Matching Text and Value
+.present .stat-title i, .present .stat-value { color: #2e7d32; }
+.lop .stat-title i, .lop .stat-value { color: #c62828; }
+.pl .stat-title i, .pl .stat-value { color: #ef6c00; }
+.wo .stat-title i, .wo .stat-value { color: #1565c0; }
+.hl .stat-title i, .hl .stat-value { color: #6a1b9a; }
+.ot .stat-title i, .ot .stat-value { color: #d84315; } */
+
+/* 📌 Large Stats Number */
+.stat-value {
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Quicksand", sans-serif;
+    margin-top: 6px;
+    color: inherit;
+}
+
+/* 🎯 Smooth Hover Effect */
+.main_content > div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.25);
+}
+.timesheet-container {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background: white;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 95%;
+}
+
+/* Header styles */
+.timesheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: #ffa751;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Full-screen button */
+.fullscreen-btn {
+    padding: 6px 14px;
+    background: white;
+    color: #ffa751;
+    border: 2px solid #ffa751;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.fullscreen-btn:hover {
+    background: #fff4e6;
+    color: #ff8800;
+    border-color: #ff8800;
+}
+
+/* Table container */
+.table-container {
+    max-height: 400px; /* Default height */
+    overflow-y: auto;
+    border-top: 1px solid #ddd;
+    flex-grow: 1; /* Ensures it expands in full-screen */
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #ffa751;
+    color: white;
+    z-index: 10;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tbody tr:hover {
+    background-color: #ffecd1;
+}
+
+th {
+    text-transform: uppercase;
+}
+
+/* Full-screen mode */
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: 100%;
+    max-height: 100vh;
+    z-index: 1000;
+    overflow: hidden;
+    background: white;
+    box-shadow: none;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.fullscreen .table-container {
+    max-height: calc(100vh - 80px);
+    height: calc(100vh - 80px);
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'ehome' %}" class="btn btn-back">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <h3>My Attendance</h3>
+    </div>
+
+    <!-- Filter Form Container -->
+    <div class="filter-container">
+    
+        <form method="GET" action="{% url 'attendance' %}" class="filter-form" id="filterForm">
+            <label for="month">Month:</label>
+            <select name="month" id="month">
+                {% for month_value, month_display in months %}
+                    <option value="{{ month_value }}" {% if month_value == attendance_summary.selected_month %}selected{% endif %}>
+                        {{ month_display }}
+                    </option>
+                {% endfor %}
+            </select>
+    
+            <label for="year">Year:</label>
+            <select name="year" id="year">
+                {% for year_value, year_display in years %}
+                    <option value="{{ year_value }}" {% if year_value == attendance_summary.selected_year %}selected{% endif %}>
+                        {{ year_display }}
+                    </option>
+                {% endfor %}
+            </select>
+    
+            <button type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div> 
+
+    <!-- Attendance Summary -->
+    <div class="main_content">
+        <div class="present">
+            <div class="stat-title"><i class="fas fa-user-check"></i> Present</div>
+            <div class="stat-value">{{ attendance_summary.total_present }}</div>
+        </div>
+        <div class="lop">
+            <div class="stat-title"><i class="fas fa-user-times"></i> LOP</div>
+            <div class="stat-value">{{ attendance_summary.loss_of_pay }}</div>
+        </div>
+        <div class="pl">
+            <div class="stat-title"><i class="fas fa-wallet"></i> Payable Leave</div>
+            <div class="stat-value">{{ attendance_summary.payable_leaves }}</div>
+        </div>
+        <div class="wo">
+            <div class="stat-title"><i class="fas fa-calendar-week"></i> Week Off</div>
+            <div class="stat-value">{{ attendance_summary.wo_count }}</div>
+        </div>
+        <div class="hl">
+            <div class="stat-title"><i class="fas fa-umbrella-beach"></i> Holiday</div>
+            <div class="stat-value">{{ attendance_summary.total_holidays }}</div>
+        </div>
+        <div class="ot">
+            <div class="stat-title"><i class="fas fa-clock"></i> OT</div>
+            <div class="stat-value">{{ attendance_summary.ot_hours }} Hrs</div>
+        </div>
+    </div>
+    <div class="chart-container">
+        <div class="chart-box" id="piechart"></div>
+    </div>
+    <div class="timesheet-container" id="timesheetContainer">
+        <div class="timesheet-header">
+            <span>Timesheet</span>
+            <button class="fullscreen-btn" onclick="toggleFullScreen()">Full Screen</button>
+        </div>
+        <div class="table-container">
+            <table id="timesheetTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable()">Date ⬍</th>
+                        <th>Shift</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>OT (min)</th>
+                        <th>Per Hours</th>
+                        <th>Late Arrival</th>
+                        <th>Early Departure</th>
+                        <th>Must Attn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in timesheet_data %}
+                    <tr>
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.regshift }}</td>
+                        <td>{{ entry.checkin }}</td>
+                        <td>{{ entry.checkout }}</td>
+                        <td>{{ entry.regot }}</td>
+                        <td>{{ entry.perhrs }}</td>
+                        <td>{{ entry.la }}</td>
+                        <td>{{ entry.ed }}</td>
+                        <td>{{ entry.mustattn }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">No records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+    
+
+    <script>
+    let sortAscending = true;
+
+function sortTable() {
+    const table = document.getElementById("timesheetTable");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+    rows.sort((rowA, rowB) => {
+        let dateA = new Date(rowA.cells[0].textContent.trim());
+        let dateB = new Date(rowB.cells[0].textContent.trim());
+
+        return sortAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+    
+    sortAscending = !sortAscending;
+}
+
+
+       google.charts.load("current", {packages:["corechart"]});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Category', 'Hours'],
+        ['✅ Present', {{ attendance_summary.total_present }}],
+        ['❌ LOP', {{ attendance_summary.loss_of_pay }}],
+        ['💰 Payable Leave', {{ attendance_summary.payable_leaves }}],
+        ['📆 Week Off', {{ attendance_summary.wo_count }}],
+        ['🌴 Holiday', {{ attendance_summary.total_holidays }}],
+    ]);
+
+    var chartElement = document.getElementById('piechart');
+    var chartWidth = chartElement.clientWidth; // Get container width
+    var chartHeight = chartWidth * 0.6; // Maintain aspect ratio
+
+    var options = {
+        is3D: true,
+        title:"Attendance breakdown",
+        chartArea: {width: '90%', height: '80%'},
+        width: chartWidth,
+        height: chartHeight,
+        background: 'transparent',
+        colors: ['#79f1c3', '#f96e61', '#f4e77f', '#7C00FE', '#91f0fa'],
+        legend: {position: 'bottom', textStyle: {fontSize: 14}},
+        titleTextStyle: {fontSize: 18, bold: true}
+    };
+
+    var chart = new google.visualization.PieChart(chartElement);
+    chart.draw(data, options);
+}
+
+// Redraw chart on window resize
+window.addEventListener('resize', drawChart);
+
+function toggleFullScreen() {
+    var timesheetContainer = document.getElementById("timesheetContainer");
+    var tableContainer = document.querySelector(".table-container");
+    var button = timesheetContainer.querySelector(".fullscreen-btn");
+
+    if (!timesheetContainer.classList.contains("fullscreen")) {
+        timesheetContainer.classList.add("fullscreen");
+        button.innerText = "Exit Full Screen";
+
+        // Dynamically adjust height in full-screen mode
+        tableContainer.style.maxHeight = (window.innerHeight - 80) + "px";
+    } else {
+        timesheetContainer.classList.remove("fullscreen");
+        button.innerText = "Full Screen";
+
+        // Reset height when exiting full-screen mode
+        tableContainer.style.maxHeight = "400px";
+    }
+}
+
+    </script>
+</body>
+</html>

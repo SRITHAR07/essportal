@@ -1,0 +1,334 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+       *{
+        font-family: "Quicksand", sans-serif;
+       }
+       .header {
+            background: #FFC107;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+       .back-button {
+           font-size: 22px;
+           color: #fff;
+           text-decoration: none;
+           font-weight: bold;
+           background: rgba(255, 255, 255, 0.2);
+           padding: 8px 15px;
+           border-radius: 8px;
+           transition: all 0.3s ease;
+       }
+       .back-button:hover {
+           background: rgba(255, 255, 255, 0.4);
+           color: #222;
+       }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+        }
+        .grid-container {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3CradialGradient id='bubbleGradient' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='rgba(255,223,100,0.6)' /%3E%3Cstop offset='100%25' stop-color='rgba(255,223,100,0.2)' /%3E%3C/radialGradient%3E%3ClinearGradient id='waveGradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff8e1'/%3E%3Cstop offset='100%25' stop-color='%23fff3cd'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23waveGradient)'/%3E%3Ccircle cx='15%25' cy='15%25' r='50' fill='url(%23bubbleGradient)' opacity='0.6'/%3E%3Ccircle cx='40%25' cy='30%25' r='70' fill='url(%23bubbleGradient)' opacity='0.4'/%3E%3Ccircle cx='75%25' cy='20%25' r='40' fill='url(%23bubbleGradient)' opacity='0.5'/%3E%3Ccircle cx='60%25' cy='60%25' r='60' fill='url(%23bubbleGradient)' opacity='0.4'/%3E%3Ccircle cx='90%25' cy='75%25' r='80' fill='url(%23bubbleGradient)' opacity='0.3'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: cover;
+            background-position: center;
+            align-items: center;
+            align-content: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 100%;
+            border-radius: 5px;
+            padding: 25px;
+        }
+        .profile-grid {
+           background: rgba(255, 255, 255, 0.2);
+           backdrop-filter: blur(20px);
+           -webkit-backdrop-filter: blur(20px);
+           border-radius: 20px;
+           padding: clamp(20px, 5vw, 40px);
+           box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+           width: min(95%, 650px);
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           text-align: center;
+           gap: clamp(20px, 4vw, 40px);
+           flex-wrap: wrap;
+           margin: auto;
+           transition: all 0.3s ease-in-out;
+       }
+       .profile-grid:hover {
+           transform: scale(1.03);
+           box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2);
+       }
+       .profile-grid img {
+           width: clamp(150px, 18vw, 200px);
+           height: clamp(150px, 18vw, 200px);
+           border-radius: 50%;
+           object-fit: cover;
+           border: 4px solid #ffcc00;
+           transition: transform 0.3s ease, box-shadow 0.3s ease;
+       }
+       .profile-grid img:hover {
+           transform: scale(1.1);
+           box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+       }
+       .profile-info {
+           flex: 1;
+           text-align: center;
+           min-width: 250px;
+       }
+       .profile-info h2 {
+           font-size: clamp(22px, 4vw, 30px);
+           font-weight: bold;
+           margin-bottom: 10px;
+           color: #222;
+           text-transform: uppercase;
+           letter-spacing: 1px;
+           text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+       }
+       .profile-info p {
+           font-size: clamp(16px, 2.5vw, 20px);
+           color: #444;
+           margin: 8px 0;
+           font-weight: 500;
+       }
+       .profile-info p i {
+           color: #ffbb00;
+           margin-right: 5px;
+       }
+.personal-grid {
+    background: white;
+    width: min(95%, 500px);
+    padding: clamp(5px, 2vw, 15px);
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    margin: 1%;
+    transition: all 0.3s ease-in-out;
+}
+.personal-grid:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.personal-grid h3 {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: bold;
+    color: #f4c20d;
+    text-align: center;
+    margin-bottom: clamp(5px, 1vw, 10px);
+    border-bottom: 1px solid #f4c20d;
+    padding-bottom: 5px;
+}
+.detail-item {
+    font-size: clamp(14px, 2vw, 18px);
+    color: #333;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.detail-item i {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: #f4c20d;
+}
+strong {
+    color: #222;
+}
+.work-info-container {
+    background: white;
+    width: min(95%, 350px);
+    height: fit-content;
+    padding: clamp(10px, 4vw, 20px);
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1%;
+    margin-top: 0px;
+    text-align: left;
+    transition: all 0.3s ease-in-out;
+}
+.work-info-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.work-info-header {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: bold;
+    color: #f4c20d;
+    text-align: center;
+    margin-bottom: clamp(5px, 1vw, 10px);
+    border-bottom: 1px solid #f4c20d;
+    padding-bottom: 10px;
+}
+.work-info-detail {
+    font-size: clamp(14px, 2vw, 18px);
+    color: #333;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.work-info-detail i {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: #f4c20d;
+}
+.work-info-label {
+    color: #222;
+    font-weight: bold;
+}
+.address-container {
+    background: white;
+    width: clamp(300px, 95%, 790px);
+    padding: clamp(5px, 1vw, 10px);
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1%;
+    transition: all 0.3s ease-in-out;
+}
+.address-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.address-header {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: bold;
+    color: #f4c20d;
+    text-align: center;
+    margin-bottom: clamp(5px, 2vw, 15px);
+    border-bottom: 1px solid #f4c20d;
+    padding-bottom: 5px;
+}
+.address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+}
+.address-detail {
+    font-size: clamp(14px, 2vw, 18px);
+    color: #333;
+    margin: 1%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.address-detail i {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: #f4c20d;
+}
+.address-label {
+    color: #222;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'ehome' %}" class="btn btn-back">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <h3>My Profile</h3>
+    </div>
+    <div class="grid-container">
+        <div class="profile-grid">
+            <label for="profile-pic">
+                <img src="{{ profile_data.profile_photo }}" alt="User Profile">
+            </label>
+            <div class="profile-info">
+                <h2>{{ profile_data.fullname }}</h2>
+                <p><i class="bi bi-person-badge"></i> Employee No: {{ username }}</p>
+                <p><i class="bi bi-briefcase"></i> {{ profile_data.desig_name|default:"N/A" }}</p>
+            </div>
+        </div>
+        <div class="personal-grid">
+            <h3><i class="bi bi-person"></i> Personal Information</h3>
+            <div class="detail-item"><i class="bi bi-calendar"></i> <strong>DOB:</strong> <span contenteditable="true">{{ profile_data.dob }}</span></div>
+            <div class="detail-item"><i class="bi bi-gender-ambiguous"></i> <strong>Gender:</strong> {{ profile_data.gender }}</div>
+            <div class="detail-item"><i class="bi bi-person-badge"></i> <strong>{{ profile_data.fhflag }}:</strong> {{ profile_data.fhname }}</div>
+            <div class="detail-item"><i class="bi bi-phone"></i> <strong>Mobile:</strong> {{ profile_data.omobile|default:"N/A" }}</div>
+            <div class="detail-item"><i class="bi bi-file-earmark-person"></i> <strong>Aadhaar No:</strong> {{ profile_data.aadhaarno|default:"N/A" }}</div>
+        </div>
+        <div class="work-info-container">
+            <h3 class="work-info-header"><i class="bi bi-briefcase"></i> Work Information</h3>
+            <div class="work-info-detail"><i class="bi bi-hash"></i> <span class="work-info-label">Bio Ref No:</span> {{ profile_data.biorefno }}</div>
+            <div class="work-info-detail"><i class="bi bi-person-vcard"></i> <span class="work-info-label">UAN No:</span> {{ profile_data.uanno }}</div>
+            <div class="work-info-detail"><i class="bi bi-wallet2"></i> <span class="work-info-label">PFno No:</span> {{ profile_data.pfno }}</div>
+            <div class="work-info-detail"><i class="bi bi-diagram-3"></i> <span class="work-info-label">Sub-Department:</span> {{ profile_data.subdept_name|default:"N/A" }}</div>
+            <div class="work-info-detail"><i class="bi bi-buildings"></i> <span class="work-info-label">Plant Code:</span> {{ profile_data.plantcode }}</div>
+            <div class="work-info-detail"><i class="bi bi-building"></i> <span class="work-info-label">Department:</span> {{ profile_data.dept_name|default:"N/A" }}</div>
+            <div class="work-info-detail"><i class="bi bi-calendar-check"></i> <span class="work-info-label">Date of Join:</span> {{ profile_data.doj }}</div>
+            <div class="work-info-detail"><i class="bi bi-person-badge"></i> <span class="work-info-label">Reports To:</span> {{ profile_data.supervisor }}</div>
+        </div>
+        <div class="address-container">
+            <h4 class="address-header"><i class="bi bi-house"></i> Permanent Address</h4>
+            <div class="address-grid">
+                {% if profile_data.addresses.permanent %}
+                    <div class="address-detail"><i class="bi bi-building"></i> <span class="address-label">Flat No:</span> {{ profile_data.addresses.permanent.platno }}</div>
+                    <div class="address-detail"><i class="bi bi-signpost"></i> <span class="address-label">Street Name:</span> {{ profile_data.addresses.permanent.streetname }}</div>
+                    <div class="address-detail"><i class="bi bi-geo"></i> <span class="address-label">Town Name:</span> {{ profile_data.addresses.permanent.townname }}</div>
+                    <div class="address-detail"><i class="bi bi-map"></i> <span class="address-label">Location ID:</span> {{ profile_data.addresses.permanent.locid }}</div>
+                    <div class="address-detail"><i class="bi bi-map-fill"></i> <span class="address-label">Location Name:</span> {{ profile_data.addresses.permanent.locname }}</div>
+                    <div class="address-detail"><i class="bi bi-geo-alt-fill"></i> <span class="address-label">Taluk Name:</span> {{ profile_data.addresses.permanent.talukname }}</div>
+                    <div class="address-detail"><i class="bi bi-building"></i> <span class="address-label">District Name:</span> {{ profile_data.addresses.permanent.districtname }}</div>
+                    <div class="address-detail"><i class="bi bi-globe"></i> <span class="address-label">State Name:</span> {{ profile_data.addresses.permanent.statename }}</div>
+                    <div class="address-detail"><i class="bi bi-flag"></i> <span class="address-label">Country Name:</span> {{ profile_data.addresses.permanent.countryname }}</div>
+                    <div class="address-detail"><i class="bi bi-person-bounding-box"></i> <span class="address-label">Nationality:</span> {{ profile_data.addresses.permanent.nationality }}</div>
+                    <div class="address-detail"><i class="bi bi-mailbox"></i> <span class="address-label">Pincode:</span> {{ profile_data.addresses.permanent.pincode }}</div>
+                {% else %}
+                    <p style="color: red;"><i class="bi bi-exclamation-circle"></i> No Permanent Address Available.</p>
+                {% endif %}
+            </div>
+            <h4 class="address-header"><i class="bi bi-house-door"></i> Communication Address</h4>
+            <div class="address-grid">
+                {% if profile_data.addresses.communication %}
+                    <div class="address-detail"><i class="bi bi-building"></i> <span class="address-label">Flat No:</span> {{ profile_data.addresses.communication.platno }}</div>
+                    <div class="address-detail"><i class="bi bi-signpost"></i> <span class="address-label">Street Name:</span> {{ profile_data.addresses.communication.streetname }}</div>
+                    <div class="address-detail"><i class="bi bi-geo"></i> <span class="address-label">Town Name:</span> {{ profile_data.addresses.communication.townname }}</div>
+                    <div class="address-detail"><i class="bi bi-map"></i> <span class="address-label">Location ID:</span> {{ profile_data.addresses.communication.locid }}</div>
+                    <div class="address-detail"><i class="bi bi-map-fill"></i> <span class="address-label">Location Name:</span> {{ profile_data.addresses.communication.locname }}</div>
+                    <div class="address-detail"><i class="bi bi-geo-alt-fill"></i> <span class="address-label">Taluk Name:</span> {{ profile_data.addresses.communication.talukname }}</div>
+                    <div class="address-detail"><i class="bi bi-building"></i> <span class="address-label">District Name:</span> {{ profile_data.addresses.communication.districtname }}</div>
+                    <div class="address-detail"><i class="bi bi-globe"></i> <span class="address-label">State Name:</span> {{ profile_data.addresses.communication.statename }}</div>
+                    <div class="address-detail"><i class="bi bi-flag"></i> <span class="address-label">Country Name:</span> {{ profile_data.addresses.communication.countryname }}</div>
+                    <div class="address-detail"><i class="bi bi-person-bounding-box"></i> <span class="address-label">Nationality:</span> {{ profile_data.addresses.communication.nationality }}</div>
+                    <div class="address-detail"><i class="bi bi-mailbox"></i> <span class="address-label">Pincode:</span> {{ profile_data.addresses.communication.pincode }}</div>
+                {% else %}
+                    <p style="color: red;"><i class="bi bi-exclamation-circle"></i> No Communication Address Available.</p>
+                {% endif %}
+            </div>
+        </div></div>
+</body>
+</html>

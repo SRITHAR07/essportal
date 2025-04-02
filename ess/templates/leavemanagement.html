@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f0f0, #d9e4f5);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+/* Back Button - Position to Left Corner */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    position: absolute;  /* Positions the button */
+    top: 20px;  /* Adjust top spacing */
+    left: 20px; /* Adjust left spacing */
+    z-index: 1000;  /* Ensures it stays above other elements */
+}
+
+.btn-back:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+}
+
+.btn-back i {
+    margin-right: 8px;
+}
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 10px;
+            text-align: center;
+            border-radius: 16px;
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.15),
+                inset 0 0 16px rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            margin: 10px auto;
+            height: auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at center,
+                rgba(92, 132, 229, 0.1) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: shimmer 8s infinite linear;
+        }
+        
+        .container:hover {
+            box-shadow: 
+                0 12px 40px rgba(31, 38, 135, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.6);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        @keyframes shimmer {
+            0% {
+                transform: rotate(30deg) translateX(-20%) translateY(-20%);
+            }
+            100% {
+                transform: rotate(30deg) translateX(20%) translateY(20%);
+            }
+        }
+        
+        /* Modern Heading Style */
+        h2 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #36D1DC, #5B86E5);
+            border-radius: 3px;
+        }
+        
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2px 0;
+            gap: 10px;
+            perspective: 1000px;
+        }
+        
+        .card {
+            width: 230px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.1));
+            z-index: -2;
+        }
+        
+        .casual { 
+            background: linear-gradient(135deg, #36D1DC, #5B86E5);
+            border-left: 4px solid #5B86E5;
+            border-bottom: 4px solid #36D1DC;
+        }
+        
+        .earned { 
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            border-left: 4px solid #96c93d;
+            border-bottom: 4px solid #00b09b;
+        }
+        
+        .maternity { 
+            background: linear-gradient(135deg, #FF8008, #FFC837);
+            border-left: 4px solid #FFC837;
+            border-bottom: 4px solid #FF8008;
+        }
+        
+        .sick { 
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            border-left: 4px solid #FF4B2B;
+            border-bottom: 4px solid #FF416C;
+        }
+        
+        /* Ensure buttons are on the same line */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        /* Premium Apply Button */
+        .apply-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .apply-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50, #1f2c38);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.3);
+        }
+        
+        .apply-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .apply-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.3);
+        }
+        
+        .apply-btn::after {
+            content: '→';
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .apply-btn:hover::after {
+            transform: translateX(3px);
+        }
+        
+        /* Super Styled Delete Leave Button */
+        .delete-btn {
+            background: linear-gradient(135deg, #ff5e62, #ff2b4a);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 300;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 12px rgba(255, 94, 98, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            width: 100px;
+            margin-left: auto;
+            display: block;
+            margin-top: 0;
+            margin-bottom: 5px;
+            box-shadow: 0 0 10px rgba(255, 94, 98, 0.5),
+                        0 0 20px rgba(255, 94, 98, 0.3);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #ff2b4a, #ff1a3a);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 94, 98, 0.4),
+                        0 0 25px rgba(255, 94, 98, 0.3);
+        }
+        
+        .delete-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(255, 94, 98, 0.3);
+        }
+        
+        .delete-btn:disabled {
+            background: linear-gradient(135deg, #cccccc, #aaaaaa);
+            color: #777777;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            text-shadow: none;
+        }
+        
+        .delete-btn::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .delete-btn:focus:not(:active)::after {
+            animation: ripple 0.6s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(25, 25);
+                opacity: 0;
+            }
+        }
+        
+        .delete-btn::before {
+            content: "🗑️";
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        /* Table Container - Modern Glass Morphism Effect */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-width: 100%;
+            margin: 5px 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            white-space: nowrap;
+        }
+        
+        /* Table Styling - Improved with borders */
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+            background: linear-gradient(145deg, #ffffff, #f5f7fa);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        thead th {
+            padding: 12px 8px;
+            text-align: center;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            position: relative;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        thead th:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        tbody tr {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+        
+        tbody tr:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+        
+        td {
+            padding: 12px 8px;
+            color: #4a4a4a;
+            white-space: nowrap;
+            font-size: 0.95rem;
+            font-weight: 400;
+            position: relative;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+        
+        td:last-child {
+            border-right: none;
+        }
+        
+        tbody tr:nth-child(odd) {
+            background: rgba(245, 247, 250, 0.6);
+        }
+        
+        tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Input Box Directly Below Leave Type */
+        .column-input {
+            width: 70%;
+            padding: 4px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+            text-align: center;
+            transition: 0.3s;
+        }
+        
+        /* Focus Effect */
+        .column-input:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+        }
+        
+        /* Table Row Styling */
+        .leave-type-cell {
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+        
+        .status-cell {
+            font-weight: 600;
+            padding: 8px 16px;
+            text-align: center;
+            border-radius: 50px;
+            display: inline-block;
+            min-width: 100px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-cell::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .status-cell:hover::before {
+            transform: translateX(0);
+        }
+        
+        .status-approved {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #4a4a4a;
+            border: none;
+        }
+        
+        .status-open {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            border: none;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 4px;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #2c3e50;
+        }
+        
+        .edit-btn {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+        
+        .save-btn { background: #28a745; color: white; }
+        .cancel-btn { background: #dc3545; color: white; }
+        
+        .edit-icon {
+            color: #007BFF;
+            cursor: pointer;
+            font-size: 18px;
+            display: block;
+            text-align: center;
+        }
+        
+        .disabled-icon {
+            color: #aaa;
+            cursor: not-allowed;
+            font-size: 18px;
+            display: block;
+            text-align: center;
+        }
+        
+/* Custom checkbox styling */
+.leave-checkbox {
+    width: 18px;
+    height: 18px;
+    display: block;
+    cursor: pointer;
+    margin-left: -55px;
+    position: relative;
+}
+
+        
+        input.leave-checkbox:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Modal Styles - Enhanced Rich Design */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 25px 30px;
+            width: 780px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .modal-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a90e2, #3a7bc8);
+            border-radius: 3px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 26px;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Form Layout - Enhanced */
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 18px;
+            align-items: flex-start;
+        }
+
+        .inline-group {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #34495e;
+            font-weight: 600;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        input, select, textarea {
+            width: 92%;
+            padding: 10px 14px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: #bdc3c7;
+            background-color: #fff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            background-color: #fff;
+        }
+
+        /* Checkbox Styles - Enhanced */
+        .checkbox-container {
+            margin-top: 24px;
+        }
+
+        .session-label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 80px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+            padding-left: 28px;
+            color: #34495e;
+            transition: color 0.3s ease;
+        }
+
+        .checkbox-option:hover {
+            color: #2c3e50;
+        }
+
+        input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: auto;
+            margin-right: 0;
+            cursor: pointer;
+            height: 18px;
+            width: 18px;
+            left: 100px;
+            z-index: 1;
+        }
+
+        input[type="checkbox"] + span {
+            position: absolute;
+            left: 100px;
+            height: 18px;
+            width: 18px;
+            background-color: #f8f9fa;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="checkbox"]:checked + span {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        input[type="checkbox"]:checked + span::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Textarea and File Input - Enhanced */
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+            width: 92%;
+            line-height: 1.5;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            width: 92%;
+            background-color: #fff;
+            border: 1px dashed #bdc3c7;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #4a90e2;
+            background-color: rgba(74, 144, 226, 0.05);
+        }
+
+        /* Submit Button - Enhanced */
+        .submit-row {
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .submit-btn {
+            padding: 12px 36px;
+            background: linear-gradient(135deg, #4a90e2, #3a7bc8);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #3a7bc8, #2c6bb7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .modal {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .inline-group {
+                width: 100%;
+            }
+            
+            input, select, textarea {
+                width: 95%;
+            }
+            
+            .checkbox-group {
+                gap: 15px;
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .modal {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .inline-group {
+                width: 100%;
+            }
+            
+            input, select, textarea {
+                width: 95%;
+            }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .inline-group {
+                width: 100%;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        tbody tr {
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+        }
+        
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* Responsive Media Queries */
+        /* Extra small devices (phones, 480px and down) */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                border-radius: 10px;
+                margin: 15px;
+                width: 95%;
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+            
+            .card {
+                width: 100%;
+                padding: 15px;
+                font-size: 12px;
+            }
+            
+            h2 {
+                font-size: 16px;
+            }
+            
+            .apply-btn, .delete-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .modal {
+                padding: 15px;
+            }
+            
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Small devices (phones, 481px to 768px) */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 12px;
+                margin: 20px auto;
+                width: 90%;
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
+            
+            .card {
+                width: 45%;
+                padding: 18px;
+                font-size: 13px;
+            }
+            
+            .table-container {
+                border-radius: 12px;
+            }
+            
+            thead th {
+                padding: 14px 10px;
+                font-size: 0.8rem;
+            }
+            
+            td {
+                padding: 12px 10px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Medium devices (tablets, 769px to 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 25px;
+                width: 90%;
+            }
+            
+            .card {
+                width: 30%;
+            }
+        }
+        
+        /* Large devices (desktops, 1025px and up) */
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .card {
+                width: 230px;
+            }
+        }
+        
+        /* High DPI (Retina) displays */
+        @media 
+        only screen and (-webkit-min-device-pixel-ratio: 2),
+        only screen and (min-resolution: 192dpi) {
+            .container {
+                box-shadow: 0 12px 48px rgba(31, 38, 135, 0.2);
+            }
+            
+            .card:hover {
+                box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            }
+        }
+        
+        /* Landscape orientation for mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+            
+            .card-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .card {
+                width: 48%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'ehome' %}" class="btn btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h2>Leave Management</h2>
+        <h3>Welcome, {{ fullname }} (ID: {{ username }})</h3>   
+
+        <!-- Leave Balance Cards -->
+        <div class="card-container">
+            <div class="card casual">Casual Leave:
+                <span id="casualLeave">{{ leave_data.Casual_Leave.utilized }}</span> /
+                {{ leave_data.Casual_Leave.total_entitlement }}
+            </div>
+            <div class="card earned">Earned Leave:
+                <span id="earnedLeave">{{ leave_data.Earned_Leave.utilized }}</span> /
+                {{ leave_data.Earned_Leave.total_entitlement }}
+            </div>
+            <div class="card maternity">Maternity Leave:
+                <span id="maternityLeave">{{ leave_data.Maternity_Leave.utilized }}</span> /
+                {{ leave_data.Maternity_Leave.total_entitlement }}
+            </div>
+            <div class="card sick">Sick Leave:
+                <span id="sickLeave">{{ leave_data.Sick_Leave.utilized }}</span> /
+                {{ leave_data.Sick_Leave.total_entitlement }}
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="text-align: center;">
+            <a href="{% url 'apply_newleave' %}" class="apply-btn">Apply for Leave</a>
+            <form id="delete-leave-form" method="POST">
+                {% csrf_token %}
+                <button type="button" class="delete-btn" id="delete-leave-btn" disabled>Delete</button>
+            </form>
+        </div>
+        
+<!-- Leave Records Table -->
+<div class="table-responsive">
+    <table id="leaveTable" class="table">
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>Select</th>
+                <th>Plant Code</th>
+                <th>
+                    Leave Type
+                    <br>
+                    <input type="text" id="leaveTypeFilter" class="form-control column-input" placeholder="🔍 Search" onkeyup="filterLeaveType()">
+                </th>
+                <th onclick="sortTable(4)">Leave From</th>
+                <th onclick="sortTable(5)">Leave To</th>
+                <th>Total Days</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leave_records %}
+            <tr>
+                <td>
+                    {% if leave.appstatus == "Open" %}
+                        <i class="fa-solid fa-pen-to-square edit-icon" onclick="openEditForm('{{ leave.id }}')" title="Edit Leave"></i>
+                    {% else %}
+                        <i class="fa-solid fa-pen-to-square edit-icon disabled-icon" title="Cannot edit"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    <input type="checkbox" class="leave-checkbox" data-id="{{ leave.id }}"
+                        data-status="{{ leave.appstatus }}"
+                        {% if leave.appstatus != "Open" %} checked disabled {% endif %}>
+                </td>
+                <td>{{ leave.plantcode }}</td>
+                <td class="leave-type-cell">{{ leave.lcode }}</td>
+                <td>{{ leave.lfrom }}</td>
+                <td>{{ leave.lto }}</td>
+                <td>{{ leave.totldays }}</td>
+                <td class="status-badge status-{{ leave.appstatus|lower }}">{{ leave.appstatus }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No leave records found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+        
+        <!-- Modal Overlay -->
+        <div id="editLeaveForm" class="modal-overlay" style="display: none;">
+            <div class="modal">
+                <span class="close-btn" onclick="closeEditForm()">&times;</span>
+                <h2 class="modal-title">Edit Leave Application</h2>
+                <form id="leaveForm" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="leaveId" name="leaveId">
+
+                    <!-- Plant Code and Leave Type (same line) -->
+                    <div class="form-row">
+                        <div class="form-group inline-group">
+                            <label for="plantcode">Plant Code:</label>
+                            <input type="text" id="plantcode" name="plantcode" readonly>
+                        </div>
+                        <div class="form-group inline-group">
+                            <label for="lcode">Leave Type:</label>
+                            <select id="lcode" name="lcode" required>
+                                <option value="">Select Leave Type</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Leave Balance and Total Days (same line) -->
+                    <div class="form-row">
+                        <div class="form-group inline-group">
+                            <label for="leavebal">Leave Balance:</label>
+                            <input type="number" id="leavebal" name="leavebal" readonly>
+                        </div>
+                        <div class="form-group inline-group">
+                            <label for="totldays">Total Days:</label>
+                            <input type="number" id="totldays" name="totldays" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Leave From with Session checkboxes (same line) -->
+                    <div class="form-row">
+                        <div class="form-group inline-group">
+                            <label for="leaveFrom">Leave From:</label>
+                            <input type="date" id="leaveFrom" name="lfrom" required onchange="validateDates()">
+                        </div>
+                        <div class="form-group inline-group checkbox-container">
+                            <label class="session-label">Session:</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="fromfn" name="fromfn">
+                                    <span>Forenoon</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="froman" name="froman">
+                                    <span>Afternoon</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave To with Session checkboxes (same line) -->
+                    <div class="form-row">
+                        <div class="form-group inline-group">
+                            <label for="leaveTo">Leave To:</label>
+                            <input type="date" id="leaveTo" name="lto" required onchange="validateDates()">
+                        </div>
+                        <div class="form-group inline-group checkbox-container">
+                            <label class="session-label">Session:</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="tofn" name="tofn">
+                                    <span>Forenoon</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="toan" name="toan">
+                                    <span>Afternoon</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description and Attachment (same line) -->
+                    <div class="form-row">
+                        <div class="form-group inline-group">
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group inline-group">
+                            <label for="attachment">Attachment:</label>
+                            <input type="file" id="attachment" name="attachment">
+                            <input type="hidden" id="existingAttachment" name="existingAttachment">
+                            <div id="currentAttachment"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="approvalStatus" name="approvalStatus">
+
+                    <!-- Submit Button (centered) -->
+                    <div class="form-row submit-row">
+                        <button type="submit" class="submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            let sortDirection = {}; // Store sorting order for each column
+            function sortTable(colIndex) {
+                const table = document.getElementById("leaveTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+                // Toggle sort direction (ascending/descending)
+                sortDirection[colIndex] = !sortDirection[colIndex];
+
+                rows.sort((rowA, rowB) => {
+                    let cellA = rowA.getElementsByTagName("td")[colIndex].innerText.trim();
+                    let cellB = rowB.getElementsByTagName("td")[colIndex].innerText.trim();
+
+                    // Convert date format to comparable values
+                    let dateA = new Date(cellA);
+                    let dateB = new Date(cellB);
+
+                    if (isNaN(dateA) || isNaN(dateB)) {
+                        return 0; // Skip sorting if not valid dates
+                    }
+
+                    return sortDirection[colIndex] ? dateA - dateB : dateB - dateA;
+                });
+
+                // Re-append sorted rows to the table body
+                rows.forEach(row => tbody.appendChild(row));
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Function to open the edit leave form
+                window.openEditForm = function (leaveId) {
+                    if (!leaveId || isNaN(leaveId)) {
+                        console.error("Invalid leave ID:", leaveId);
+                        alert("Invalid leave ID");
+                        return;
+                    }
+
+                    console.log("Opening edit form for leave ID:", leaveId);
+
+                    // Fetch leave details and populate the form
+                    fetch(`/get-leave-details/${leaveId}/`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Network response was not ok');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Populate basic form fields
+                                document.getElementById("leaveId").value = leaveId;
+                                document.getElementById("plantcode").value = data.plantcode || "";
+                                document.getElementById("leaveFrom").value = data.leaveFrom || "";
+                                document.getElementById("leaveTo").value = data.leaveTo || "";
+                                document.getElementById("description").value = data.description || "";
+                                document.getElementById("leavebal").value = data.leaveBalance || "";
+                                document.getElementById("totldays").value = data.totalDays || "";
+                                document.getElementById("approvalStatus").value = data.approvalStatus || "";
+                                
+                                // Set checkbox values
+                                document.getElementById("fromfn").checked = data.fromFN || false;
+                                document.getElementById("froman").checked = data.fromAN || false;
+                                document.getElementById("tofn").checked = data.toFN || false;
+                                document.getElementById("toan").checked = data.toAN || false;
+                                
+                                // Show current attachment if exists
+                                if (data.attachment) {
+                                    document.getElementById("currentAttachment").innerHTML = 
+                                        `Current file: ${data.attachment}`;
+                                }
+
+                                // Populate Leave Type Dropdown
+                                const leaveTypeDropdown = document.getElementById("lcode");
+                                leaveTypeDropdown.innerHTML = '<option value="">Select Leave Type</option>';
+                                
+                                if (data.leaveTypes && data.leaveTypes.length > 0) {
+                                    data.leaveTypes.forEach(leave => {
+                                        const option = document.createElement("option");
+                                        option.value = leave.lcode;
+                                        option.textContent = leave.lcode;
+                                        option.setAttribute('data-balance', leave.lbal);
+                                        
+                                        // Set selected option
+                                        if (leave.lcode === data.leaveCode) {
+                                            option.selected = true;
+                                            // Update leave balance when selecting the current leave type
+                                            document.getElementById("leavebal").value = leave.lbal;
+                                        }
+                                        
+                                        leaveTypeDropdown.appendChild(option);
+                                    });
+                                }
+
+                                // Show the modal
+                                document.getElementById("editLeaveForm").style.display = "flex";
+                            } else {
+                                alert("Failed to fetch leave details: " + (data.message || "Unknown error"));
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching leave details:", error);
+                            alert("Failed to fetch leave details. Please check console for details.");
+                        });
+                };
+
+                // Function to close the edit leave form
+                window.closeEditForm = function () {
+                    document.getElementById("editLeaveForm").style.display = "none";
+                };
+
+                // Handle form submission
+                document.getElementById("leaveForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const leaveId = document.getElementById("leaveId").value;
+                    if (!leaveId || isNaN(leaveId)) {
+                        alert("Invalid leave ID.");
+                        return;
+                    }
+                    updateLeave(leaveId);
+                });
+
+                // Function to update leave details via API
+                window.updateLeave = function (leaveId) {
+                    if (!leaveId || isNaN(leaveId)) {
+                        alert("Invalid leave ID.");
+                        return;
+                    }
+
+                    const form = document.getElementById("leaveForm");
+                    const formData = new FormData(form);
+                    
+                    // Add CSRF token
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Updating...";
+
+                    fetch(`/api/update-leave/${leaveId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        },
+                        body: formData
+                    })
+                    .then(async response => {
+                        const data = await response.json();
+                        if (!response.ok) {
+                            throw new Error(data.message || `Server returned ${response.status}`);
+                        }
+                        return data;
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);  // Shows the success message from backend
+                            closeEditForm();
+                            location.reload();
+                        } else {
+                            throw new Error(data.message || "Failed to update leave");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Full error details:", error);
+                        alert(`Error updating leave: ${error.message}\n\nCheck console for details.`);
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    });
+                };
+
+                // Function to validate dates
+                window.validateDates = function() {
+                    const fromDateInput = document.getElementById("leaveFrom");
+                    const toDateInput = document.getElementById("leaveTo");
+                    const fromDate = new Date(fromDateInput.value);
+                    const toDate = new Date(toDateInput.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+                    const applicationDate = new Date(); // Current date and time of application
+
+                    // Validate From Date is not in the past relative to application time
+                    if (fromDateInput.value) {
+                        if (fromDate < today) {
+                            alert("Leave From date cannot be in the past. Please select today's date or a future date.");
+                            fromDateInput.value = "";
+                            document.getElementById("totldays").value = "0";
+                            return;
+                        }
+                        
+                        // Additional check for same-day applications in the afternoon
+                        if (fromDate.getTime() === today.getTime() && applicationDate.getHours() >= 12) {
+                            const fromFn = document.getElementById("fromfn");
+                            if (fromFn && fromFn.checked) {
+                                alert("Morning half-day leave cannot be applied for today in the afternoon.");
+                                fromFn.checked = false;
+                                document.getElementById("froman").checked = true;
+                            }
+                        }
+                    }
+
+                    // Validate date range
+                    if (fromDateInput.value && toDateInput.value && fromDate > toDate) {
+                        alert("Leave From date cannot be later than Leave To date.");
+                        toDateInput.value = "";
+                        document.getElementById("totldays").value = "0";
+                    }
+                    
+                    calculateTotalDays();
+                };
+
+                // Function to calculate total leave days
+                function calculateTotalDays() {
+                    const fromDate = new Date(document.getElementById("leaveFrom").value);
+                    const toDate = new Date(document.getElementById("leaveTo").value);
+                    const totalDaysField = document.getElementById("totldays");
+
+                    if (isNaN(fromDate.getTime())) {
+                        totalDaysField.value = "0";
+                        return;
+                    }
+
+                    // If only from date is selected (to date is empty)
+                    if (isNaN(toDate.getTime())) {
+                        // Check if it's a half day
+                        const fromFn = document.getElementById("fromfn").checked;
+                        const fromAn = document.getElementById("froman").checked;
+                        totalDaysField.value = (fromFn && fromAn) ? "1.0" : 
+                                            (fromFn || fromAn) ? "0.5" : "0";
+                        return;
+                    }
+
+                    // Validate date range
+                    if (fromDate > toDate) {
+                        totalDaysField.value = "0";
+                        return;
+                    }
+
+                    // Get half day selections
+                    const fromFn = document.getElementById("fromfn").checked;
+                    const fromAn = document.getElementById("froman").checked;
+                    const toFn = document.getElementById("tofn").checked;
+                    const toAn = document.getElementById("toan").checked;
+
+                    // Calculate total days (inclusive of both dates)
+                    let totalDays = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
+
+                    // Handle same day case
+                    if (totalDays === 1) {
+                        if (fromFn && fromAn) {
+                            totalDays = 1.0;
+                        } else if (fromFn || fromAn) {
+                            totalDays = 0.5;
+                        }
+                        totalDaysField.value = totalDays.toFixed(1);
+                        return;
+                    }
+
+                    // Adjust for half days on start date
+                    if (!fromFn && fromAn) { // Only afternoon selected
+                        totalDays -= 0.5;
+                    } else if (fromFn && !fromAn) { // Only morning selected
+                        totalDays -= 0.5;
+                    }
+
+                    // Adjust for half days on end date
+                    if (!toFn && toAn) { // Only afternoon selected
+                        totalDays -= 0.5;
+                    } else if (toFn && !toAn) { // Only morning selected
+                        totalDays -= 0.5;
+                    }
+
+                    totalDaysField.value = Math.max(totalDays, 0).toFixed(1);
+                }
+
+                // Set minimum date for date inputs to today and handle time-based restrictions
+                document.addEventListener('DOMContentLoaded', function() {
+                    const today = new Date();
+                    const todayString = today.toISOString().split('T')[0];
+                    const leaveFromInput = document.getElementById("leaveFrom");
+                    const leaveToInput = document.getElementById("leaveTo");
+                    
+                    // Set minimum dates
+                    leaveFromInput.min = todayString;
+                    leaveToInput.min = todayString;
+                    
+                    // If applying in the afternoon, disable morning half-day for today
+                    if (today.getHours() >= 12) {
+                        leaveFromInput.addEventListener('change', function() {
+                            const selectedDate = new Date(this.value);
+                            if (selectedDate.toDateString() === today.toDateString()) {
+                                const fromFn = document.getElementById("fromfn");
+                                if (fromFn && fromFn.checked) {
+                                    alert("Cannot select morning half-day for today in the afternoon.");
+                                    fromFn.checked = false;
+                                    document.getElementById("froman").checked = true;
+                                    calculateTotalDays();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                // Attach event listeners
+                ["leaveFrom", "leaveTo"].forEach(id => {
+                    document.getElementById(id).addEventListener("change", validateDates);
+                });
+
+                ["fromfn", "froman", "tofn", "toan"].forEach(id => {
+                    document.getElementById(id).addEventListener("change", calculateTotalDays);
+                });
+
+                // Add event listener for leave type change to update balance
+                document.getElementById("lcode").addEventListener("change", function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption && selectedOption.dataset.balance) {
+                        document.getElementById("leavebal").value = selectedOption.dataset.balance;
+                    }
+                });
+
+                // Delete Leave Functionality
+                const leaveCheckboxes = document.querySelectorAll(".leave-checkbox");
+                const deleteLeaveBtn = document.getElementById("delete-leave-btn");
+
+                // Enable/disable delete button based on checkbox selection
+                leaveCheckboxes.forEach((checkbox) => {
+                    checkbox.addEventListener("change", function() {
+                        const selectedLeaves = document.querySelectorAll(".leave-checkbox:checked:not([disabled])");
+                        deleteLeaveBtn.disabled = selectedLeaves.length === 0;
+                    });
+                });
+
+                // Delete button click handler
+                if (deleteLeaveBtn) {
+                    deleteLeaveBtn.addEventListener("click", function() {
+                        const selectedLeaves = document.querySelectorAll(".leave-checkbox:checked:not([disabled])");
+                        
+                        if (selectedLeaves.length === 0) {
+                            alert("Please select at least one leave record to delete.");
+                            return;
+                        }
+
+                        // Get first selected leave ID (since our view handles one at a time)
+                        const leaveId = selectedLeaves[0].getAttribute("data-id");
+                        const leaveStatus = selectedLeaves[0].getAttribute("data-status");
+                        
+                        if (leaveStatus !== "Open") {
+                            alert("Only leave applications with 'Open' status can be deleted.");
+                            return;
+                        }
+                        
+                        if (confirm("Are you sure you want to delete this leave application?")) {
+                            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                            
+                            fetch(`/delete-leave/${leaveId}/`, {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrfToken,
+                                    "Content-Type": "application/json"
+                                }
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error('Network response was not ok');
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message || "Leave application successfully deleted!");
+                                    location.reload();
+                                } else {
+                                    throw new Error(data.error || "Failed to delete leave application");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                alert("Error deleting leave application: " + error.message);
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

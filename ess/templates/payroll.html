@@ -1,0 +1,318 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Payslip</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Quicksand", sans-serif;
+            font-optical-sizing: auto;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: #FFC107;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .btn-generate {
+            margin-top: 5px;
+        }
+        .payslip-list {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            margin-bottom: 10px;
+        }
+        .ntot-amount {
+            font-weight: bold;
+            color: #007bff;
+        }
+        /* Card Animation */
+.animated-card {
+    transition: all 0.3s ease-in-out;
+    border-radius: 12px;
+}
+
+/* Button Hover Animation */
+.btn-animate {
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out;
+}
+.btn-animate:hover {
+    transform: scale(1.05);
+    background-color: #f04309 !important;
+    color: white !important;
+}
+
+/* Table Row Hover Effect */
+.table-row-hover:hover {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Section Titles */
+.header-section h4, .filter-section h5, .table-responsive h5 {
+    font-weight: bold;
+}
+
+/* Border Styling */
+.border {
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Pagination Hover Effect */
+.pagination .page-link {
+    transition: all 0.2s ease-in-out;
+}
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white !important;
+}
+#previewContent {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling if needed */
+    white-space: normal; /* Ensures text wraps correctly */
+    text-align: left;
+}
+
+#previewContent img {
+    max-width: 100%; /* Ensures images fit inside the modal */
+    height: auto;
+}
+
+#previewContent table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+}
+
+#previewContent table th, #previewContent table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+#previewContent table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+<div class="header">
+    <a href="{% url 'ehome' %}" class="btn btn-back">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+    <h3>My Payslip</h3>
+</div>
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 animated-card">
+        <!-- Header Section -->
+        <div class="header-section text-center pb-3 border-bottom">
+            <h4 class="text-primary">
+                <i class="bi bi-receipt"></i> Download Payslip
+            </h4>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section p-3 mt-3 border rounded">
+            <h5 class="text-secondary text-center mb-3"><i class="bi bi-filter"></i> Filter Payslips</h5>
+            <form method="get" class="d-flex flex-wrap gap-3 justify-content-center">
+                <div class="d-flex flex-column align-items-start">
+                    <label for="from_date" class="fw-bold">From Date:</label>
+                    <input type="month" id="from_date" name="from_date" class="form-control" required>
+                </div>
+
+                <div class="d-flex flex-column align-items-start">
+                    <label for="to_date" class="fw-bold">To Date:</label>
+                    <input type="month" id="to_date" name="to_date" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary align-self-center mt-2 mt-sm-0 btn-animate">
+                    <i class="bi bi-search"></i> Apply Filter
+                </button>
+            </form>
+        </div>
+
+        <!-- Payslip Table -->
+        <div class="table-responsive mt-4">
+            <h5 class="text-secondary text-center mb-3"><i class="bi bi-table"></i> Payslip Records</h5>
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">
+                            <a href="?sort_by=smonth&order={{ order }}&from_date={{ from_date }}&to_date={{ to_date }}" class="text-white text-decoration-none">
+                                Date 
+                                {% if sort_by == "smonth" %}
+                                    {% if order == "asc" %}
+                                        <i class="bi bi-arrow-up"></i>
+                                    {% else %}
+                                        <i class="bi bi-arrow-down"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i> 
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="text-center d-none d-md-table-cell">worked days</th>
+                        <th class="text-center d-none d-md-table-cell">LOP</th>
+                        <th class="text-center d-none d-md-table-cell">OT hrs</th>
+                        <th class="text-center d-none d-md-table-cell">Gross Amount</th>
+                        <th class="text-center d-none d-md-table-cell">Total Deductions</th>
+                        <th class="text-center">Net Amount</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in page_obj %}
+                    <tr class="table-row-hover">
+                        <td class="text-center">{{ month.smonth|date:'F Y' }}</td>
+                        <td class="text-center text-success fw-bold d-none d-md-table-cell">{{ month.wdays }}</td>
+                        <td class="text-center text-success fw-bold d-none d-md-table-cell">{{ month.lopdays }}</td>
+                        <td class="text-center text-success fw-bold d-none d-md-table-cell">{{ month.oth }}hrs</td>
+                        <td class="text-center text-success fw-bold d-none d-md-table-cell">{{ month.gramt }}</td>
+                        <td class="text-center text-success fw-bold d-none d-md-table-cell">{{ month.dtot }}</td>
+                        <td class="text-center text-success fw-bold">{{ month.ntot }}</td>
+                        <td class="text-center">
+                            <form method="post" action="{% url 'testdown' %}" class="d-flex justify-content-center">
+                                {% csrf_token %}
+                                <input type="hidden" name="month_year" value="{{ month.smonth|date:'Y-m' }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-animate">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </form>
+                            <form method="post" class="d-flex justify-content-center preview-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="month_year" value="{{ month.smonth|date:'Y-m' }}">
+                                <button type="button" class="btn btn-outline-primary btn-sm btn-animate preview-btn">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </form>
+                        </td>
+                       
+                            
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No payslip records found for the selected date range.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section d-flex justify-content-center mt-3">
+            <nav>
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link btn-animate" href="?page=1&from_date={{ from_date }}&to_date={{ to_date }}">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link btn-animate" href="?page={{ page_obj.previous_page_number }}&from_date={{ from_date }}&to_date={{ to_date }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link btn-animate" href="?page={{ page_obj.next_page_number }}&from_date={{ from_date }}&to_date={{ to_date }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link btn-animate" href="?page={{ page_obj.paginator.num_pages }}&from_date={{ from_date }}&to_date={{ to_date }}">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Payslip Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- Use an iframe to isolate report HTML -->
+                <iframe id="previewIframe" style="width: 100%; height: 80vh; border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".preview-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let form = this.closest(".preview-form");
+                let formData = new FormData(form);
+    
+                fetch("{% url 'testpreview' %}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": formData.get("csrfmiddlewaretoken")
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.html_content) {
+                        let iframe = document.getElementById("previewIframe");
+                        let doc = iframe.contentDocument || iframe.contentWindow.document;
+                        doc.open();
+                        doc.write(data.html_content);
+                        doc.close();
+    
+                        // Show modal after content is loaded
+                        var previewModal = new bootstrap.Modal(document.getElementById("previewModal"));
+                        previewModal.show();
+                    } else {
+                        alert("Error loading preview.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error loading preview.");
+                });
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

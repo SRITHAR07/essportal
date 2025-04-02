@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+    font-family: 'Poppins', sans-serif;
+    background:white;
+    margin: 0;
+    
+}
+
+
+       
+        /* Buttons */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        button {
+            background-color: #ffb400;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        
+/* Delete Button */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+    max-width: 80px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Disabled Delete Button */
+.delete-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+/* Table Styling */
+table {
+    width: 90%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: auto;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    margin: auto;
+}
+
+/* Table Header Styling */
+th {
+    padding: 14px;
+    background: #368deb; /* Simple Blue */
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 3px solid #0765c9;
+}
+
+/* Table Cells */
+td {
+    padding: 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Row Hover Effect */
+tr:hover {
+    background: rgba(0, 85, 179, 0.1);
+    transform: scale(1.01);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Alternate Row Styling */
+tr:nth-child(even) {
+    background: rgba(240, 240, 240, 0.6);
+}
+
+/* Edit Icon Styling */
+.edit-icon {
+    color: #007bff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.edit-icon:hover {
+    color: #0056b3;
+    transform: scale(1.15);
+}
+
+.disabled-icon {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Custom Checkbox Styling */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #007bff;
+    transition: transform 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:hover {
+    transform: scale(1.1);
+}
+
+/* Neumorphic Status Badges */
+.status-cell {
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.1),
+                inset -3px -3px 8px rgba(255, 255, 255, 0.4);
+}
+
+/* Status Colors */
+.status-approved {
+    background: linear-gradient(to right, #21d917, #95f71f);
+    transform: translateY(-2px);
+}
+
+.status-rejected {
+    background: linear-gradient(to right, #dd2476, #ff512f);
+    transform: translateY(-2px);
+    
+}
+
+.status-pending {
+    background: linear-gradient(to right, #d2ba1e, #f2fc63);
+    transform: translateY(-2px);
+}
+
+
+
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+        .hide-on-mobile {
+            display: none;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .glass-table {
+            width: 100%;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        th, td {
+            padding: 8px;
+            font-size: 0.75rem;
+        }}
+/* Animation for Table Rows */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Prevents modal overflow */
+}
+
+/* Centered modal with proper max-height */
+.modal-content {
+    background: #ffffff;
+    width: 70%;
+    height: 70%;
+    max-height: 80vh; /* Prevents content overflow */
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollable area inside modal */
+.modal-content form {
+    overflow-y: auto;
+    max-height: 65vh; /* Allows scrolling for longer content */
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
+/* Form Section - Flexbox for split layout */
+.form-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap; /* Ensures wrapping if space is tight */
+}
+
+/* Ensure responsive field width */
+.form-group {
+    width: 48%;
+}
+
+/* Form Inputs */
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Submit Button */
+button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 80%;
+        max-height: 85vh;
+    }
+    
+    .form-group {
+        width: 100%;
+    }
+}
+  
+.header {
+            background: #FFC107;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+        
+
+        .swipe-hand {
+            position: absolute;
+            top: 55%;
+            left: 45%;
+            width: 60px;
+            height: 60px;
+            background: url('/static/swipe-left.gif') no-repeat center/contain;
+            animation: fadeOut 3s forwards;
+            display: none;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); display: none; }
+        }
+
+        @keyframes swipeRight {
+            0% { transform: translateX(0) scale(1); opacity: 1; }
+            50% { transform: translateX(30px) scale(1.1); opacity: 0.7; }
+            100% { transform: translateX(60px) scale(1); opacity: 0; }
+        }
+
+        @media screen and (max-width: 768px) {
+            .swipe-instruction, .swipe-hand {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'ehome' %}" class="btn btn-back">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <h3>My Loan Application</h3>
+    </div>
+    
+    <div class="swipe-hand"></div>
+    <!-- Buttons -->
+    <div class="button-container">
+        <a href="{% url 'apply_newloan' %}">
+            <button>New Loan</button>
+        </a>
+        <button type="button" class="delete-btn" id="delete-loan-btn" disabled>Delete</button>
+    </div>
+    
+  
+
+        <h1>Details</h1>
+        <div class="table-responsive">
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th >Edit</th>
+                        <th >Select</th>
+                        <th onclick="sortTable(2)">Req. Date ⬆⬇</th>
+                        <th>Type</th>
+                        <th>Req Amt</th>
+                        <th>EMI</th>
+                        <th>Dues</th>
+                        <th>Deduction</th>
+                        <th class="hide-on-mobile">Remarks</th>
+                        <th>Deduction Start</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="loan-table-body">
+                    {% for loan in loan_applications %}
+                    <tr>
+                        <td >
+                            {% if loan.appstatus == "Open" %}
+                                <i class="fa fa-pencil-alt edit-icon" onclick="openLoanPopup('{{ loan.id }}')" title="Edit Loan"></i>
+                            {% else %}
+                                <i class="fa fa-pencil-alt edit-icon disabled-icon" title="Edit Loan"></i>
+                            {% endif %}
+                        </td>
+                        <td >
+                            <input type="checkbox" class="loan-checkbox" data-id="{{ loan.id }}"
+                                data-status="{{ loan.appstatus }}"
+                                {% if loan.appstatus != "Open" %} checked disabled {% endif %}>
+                        </td>
+                        <td>{{ loan.loanreqdt|date:"Y-m-d" }}</td>
+                        <td>{{ loan.lnameid.loanname }}</td>
+                        <td>{{ loan.loanamt }}</td>
+                        <td>{{ loan.loanemi }}</td>
+                        <td>{{ loan.noofdues }}</td>
+                        <td>{{ loan.dedmode }}</td>
+                        <td class="hide-on-mobile">{{ loan.remarks }}</td>
+                        <td>{{ loan.dedstartfrom|date:"Y-m-d" }}</td>
+                        <td class="status-cell status-{{ loan.appstatus|lower }}"><a href="{% url 'loan_details' loan.id %}">{{ loan.appstatus }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    
+    
+    
+    
+    
+<!-- Loan Popup Modal -->
+<div id="loanPopup" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeLoanPopup()">&times;</span>
+        <h2>Loan Application</h2>
+
+        <form id="loanForm" method="POST" action="#">
+            {% csrf_token %}
+
+            <!-- First Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="loanReqDate">Loan Request Date:</label>
+                    <input type="date" id="loanReqDate" name="loanReqDate" value="{{ loan_data.loanreqdt|default:'' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="loanType">Loan Type:</label>
+                    <select id="loanType" name="loanType" required>
+                        <option value="">Please select</option>
+                        {% for loan in loan_types %}
+                            <option value="{{ loan.id }}" {% if loan.id == loan_data.lnameid.id %} selected {% endif %}>
+                                {{ loan.loanname }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Second Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="loanAmount">Required Loan Amount:</label>
+                    <input type="number" id="loanAmount" name="loanAmount" value="{{ loan_data.loanamt|default:'' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="noOfDues">No of Dues:</label>
+                    <input type="number" id="noOfDues" name="noOfDues" value="{{ loan_data.noofdues|default:'' }}" required>
+                </div>
+            </div>
+
+            <!-- Third Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="loanEmi">Loan EMI:</label>
+                    <input type="number" id="loanEmi" name="loanEmi" step="0.01" value="{{ loan_data.loanemi|default:'0' }}" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="interestRate">Interest Rate (%):</label>
+                    <input type="number" id="interestRate" name="interestRate" step="0.01" value="{{ loan_data.intrate|default:'0' }}" required>
+                </div>
+            </div>
+
+            <!-- Fourth Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="interestAmount">Interest Amount:</label>
+                    <input type="number" id="interestAmount" name="interestAmount" step="0.01" value="{{ loan_data.intamt|default:'0' }}">
+                </div>
+                <div class="form-group">
+                    <label for="dedMode">Mode of Deduction:</label>
+                    <select id="dedMode" name="dedMode" required>
+                        <option value="">Please select</option>
+                        <option value="Weekly" {% if loan_data.dedmode == "Weekly" %}selected{% endif %}>Weekly</option>
+                        <option value="Monthly" {% if loan_data.dedmode == "Monthly" %}selected{% endif %}>Monthly</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Fifth Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="dedStart">Deduction Start Date:</label>
+                    <input type="date" id="dedStart" name="dedStart" value="{{ loan_data.dedstartfrom|default:'' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="sanctionedAmount">Sanctioned Amount:</label>
+                    <input type="number" id="sanctionedAmount" name="sanctionedAmount" value="{{ loan_data.sanctionamt|default:'0' }}" readonly required>
+                </div>
+            </div>
+
+            <!-- Sixth Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="sanctionedDues">Sanctioned Dues:</label>
+                    <input type="number" id="sanctionedDues" name="sanctionedDues" value="{{ loan_data.sanctiondues|default:'0' }}" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="sanctionedEmi">Sanctioned EMI:</label>
+                    <input type="number" id="sanctionedEmi" name="sanctionedEmi" step="0.01" value="{{ loan_data.sanctionemi|default:'0' }}" readonly required>
+                </div>
+            </div>
+
+            <!-- Seventh Row -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="sanctionedNet">Sanctioned Net Amount:</label>
+                    <input type="number" id="sanctionedNet" name="sanctionedNet" step="0.01" value="{{ loan_data.sanctionnetamt|default:'0' }}" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks:</label>
+                    <textarea id="remarks" name="remarks" rows="3">{{ loan_data.remarks|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <!-- EMI Breakdown -->
+            <div class="form-section">
+                <label>EMI Breakdown:</label>
+                <div id="emiBreakdown">
+                    <div id="emiTextBreakdown"></div>
+                    <div><strong>Total: ₹<span id="emiTotal">0.00</span></strong></div>
+                </div>
+            </div>
+
+            <input type="hidden" id="approvalStatus" name="approvalStatus" value="Pending">    
+
+            <!-- Submit Button -->
+            <div class="button-group">
+                <button type="submit" name="action" value="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+ 
+let sortDirection = false; // false = descending by default
+
+function sortTable(colIndex) {
+    const table = document.querySelector(".glass-table tbody");
+    const rows = Array.from(table.getElementsByTagName("tr"));
+
+    rows.sort((rowA, rowB) => {
+        let cellA = rowA.getElementsByTagName("td")[colIndex].innerText.trim();
+        let cellB = rowB.getElementsByTagName("td")[colIndex].innerText.trim();
+
+        // Convert to Date objects for sorting
+        let dateA = new Date(cellA);
+        let dateB = new Date(cellB);
+
+        if (isNaN(dateA) || isNaN(dateB)) {
+            return 0; // Skip sorting if not valid dates
+        }
+
+        return sortDirection ? dateA - dateB : dateB - dateA;
+    });
+
+    // Toggle sorting order for next click
+    sortDirection = !sortDirection;
+
+    // Re-append sorted rows to the table body
+    rows.forEach(row => table.appendChild(row));
+}
+
+// Automatically sort in descending order on page load
+window.onload = function() {
+    sortTable(2); // Sort "Req. Date" in descending order by default
+};
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Initialize with interest fields disabled
+    document.getElementById("interestRate").disabled = true;
+    document.getElementById("interestAmount").disabled = true;
+
+    // Function to toggle interest fields based on loan type selection
+    function toggleInterestFields() {
+        const loanType = document.getElementById("loanType").value;
+        const interestRate = document.getElementById("interestRate");
+        const interestAmount = document.getElementById("interestAmount");
+        
+        if (loanType) {
+            interestRate.disabled = false;
+            interestAmount.disabled = false;
+        } else {
+            interestRate.disabled = true;
+            interestAmount.disabled = true;
+            interestRate.value = "0";
+            interestAmount.value = "0";
+            calculateInterestAndEMI(); // Recalculate with zero interest
+        }
+    }
+// Interest and EMI Calculation
+function calculateInterestAndEMI() {
+    let loanAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
+    let noOfDues = parseInt(document.getElementById("noOfDues").value) || 1;
+    let interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+    
+    // Calculate MONTHLY interest amount (not annual)
+    let monthlyInterest = loanAmount * (interestRate / 100);
+    
+    // Update interest amount field
+    document.getElementById("interestAmount").value = monthlyInterest.toFixed(2);
+    
+    // Calculate total payable amount (principal + total interest)
+    let totalInterest = monthlyInterest * noOfDues;
+    let totalPayable = loanAmount + totalInterest;
+    
+    // Calculate EMI (rounded to nearest integer)
+    let emi = Math.round(totalPayable / noOfDues);
+    
+    // Update EMI field
+    document.getElementById("loanEmi").value = emi.toFixed(2);
+    
+    // Update sanctioned fields
+    updateSanctionedFields();
+}
+
+// Update Sanctioned Fields with Interest Calculation
+function updateSanctionedFields() {
+    let loanAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
+    let noOfDues = parseInt(document.getElementById("noOfDues").value) || 1;
+    let interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+    
+    // Calculate MONTHLY interest amount (not annual)
+    let monthlyInterest = loanAmount * (interestRate / 100);
+    let totalInterest = monthlyInterest * noOfDues;
+    let totalPayable = loanAmount + totalInterest;
+
+    // Update fields
+    document.getElementById("sanctionedAmount").value = loanAmount.toFixed(2);
+    document.getElementById("sanctionedNet").value = totalPayable.toFixed(2);
+    document.getElementById("sanctionedDues").value = noOfDues;
+
+    if (loanAmount > 0 && noOfDues > 0) {
+        // Calculate EMI breakdown
+        let emi = Math.round(totalPayable / noOfDues);
+        let sumOfFirstEMIs = emi * (noOfDues - 1);
+        let lastEmi = totalPayable - sumOfFirstEMIs;
+
+        // Update EMI display
+        document.getElementById("sanctionedEmi").value = emi.toFixed(2);
+        
+        // Update EMI breakdown display
+        updateEMIBreakdown(noOfDues, emi, lastEmi, totalPayable);
+    } else {
+        document.getElementById("sanctionedEmi").value = "0.00";
+        document.getElementById("emiBreakdown").style.display = "none";
+    }
+}
+    // EMI Breakdown Display
+    function updateEMIBreakdown(noOfDues, emi, lastEmi, totalPayable) {
+        let emiBreakdownDiv = document.getElementById("emiBreakdown");
+        let emiTextBreakdown = document.getElementById("emiTextBreakdown");
+        let emiTotal = document.getElementById("emiTotal");
+
+        let emiParts = [];
+        for (let i = 0; i < noOfDues; i++) {
+            let emiAmount = (i < noOfDues - 1) ? emi : lastEmi;
+            let suffix = getOrdinalSuffix(i + 1);
+            emiParts.push(`${i+1}${suffix} EMI=₹${emiAmount.toFixed(2)}`);
+        }
+
+        // Group into chunks of 10 per line
+        let emiLines = [];
+        for (let i = 0; i < emiParts.length; i += 10) {
+            emiLines.push(emiParts.slice(i, i + 10).join(", "));
+        }
+
+        emiTextBreakdown.innerHTML = emiLines.join("<br>");
+        emiTotal.textContent = totalPayable.toFixed(2);
+        emiBreakdownDiv.style.display = "block";
+        adjustTextSize();
+    }
+
+    // Helper functions
+    function adjustTextSize() {
+        let emiBreakdownDiv = document.getElementById("emiBreakdown");
+        let emiTextBreakdown = document.getElementById("emiTextBreakdown");
+        let divWidth = emiBreakdownDiv.clientWidth;
+        let newSize = divWidth / 30;
+        emiTextBreakdown.style.fontSize = Math.max(10, newSize) + "px";
+    }
+
+    function getOrdinalSuffix(number) {
+        const j = number % 10;
+        const k = number % 100;
+        if (j == 1 && k != 11) return "st";
+        if (j == 2 && k != 12) return "nd";
+        if (j == 3 && k != 13) return "rd";
+        return "th";
+    }
+
+    // Event listeners for calculation fields
+    document.getElementById("loanType").addEventListener("change", toggleInterestFields);
+    document.getElementById("loanAmount").addEventListener("input", calculateInterestAndEMI);
+    document.getElementById("noOfDues").addEventListener("input", calculateInterestAndEMI);
+    document.getElementById("interestRate").addEventListener("input", calculateInterestAndEMI);
+
+    // Function to open loan popup when clicking the edit icon
+    window.openLoanPopup = function (loanId) {
+        console.log("Opening popup for loan ID:", loanId); 
+
+        // Fetch loan details and populate the form
+        fetch(`/get-loan-details/${loanId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fill loan details in the popup
+                    document.getElementById("loanReqDate").value = data.loanreqdt || "";
+                    document.getElementById("loanAmount").value = data.loanamt || "";
+                    document.getElementById("noOfDues").value = data.noofdues || "";
+                    document.getElementById("loanEmi").value = data.loanemi || "";
+                    document.getElementById("interestRate").value = data.intrate || "";
+                    document.getElementById("interestAmount").value = data.intamt || "";
+                    document.getElementById("dedMode").value = data.dedmode || "";
+                    document.getElementById("dedStart").value = data.dedstartfrom || "";
+                    document.getElementById("sanctionedAmount").value = data.sanctionamt || "";
+                    document.getElementById("sanctionedDues").value = data.sanctiondues || "";
+                    document.getElementById("sanctionedEmi").value = data.sanctionemi || "";
+                    document.getElementById("sanctionedNet").value = data.sanctionnetamt || "";
+                    document.getElementById("remarks").value = data.remarks || "";
+
+                    // Populate loan type dropdown
+                    const loanTypeDropdown = document.getElementById("loanType");
+                    loanTypeDropdown.innerHTML = '<option value="">Please select</option>';
+                    data.loanTypes.forEach(loan => {
+                        const option = new Option(loan.name, loan.id);
+                        if (loan.id === data.lnameid) option.selected = true;
+                        loanTypeDropdown.add(option);
+                    });
+
+                    // Set the loan ID in the form
+                    document.getElementById("loanForm").setAttribute("data-loan-id", loanId);
+
+                    // Enable interest fields if needed
+                    toggleInterestFields();
+                    
+                    // Trigger calculation to update all fields
+                    calculateInterestAndEMI();
+
+                    // Show the popup
+                    document.getElementById("loanPopup").style.display = "flex";
+                } else {
+                    alert("Failed to fetch loan details.");
+                }
+            })
+            .catch(error => console.error("Error fetching loan details:", error));
+    };
+
+    // Handle form submission
+    document.getElementById("loanForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const loanId = document.getElementById("loanForm").getAttribute("data-loan-id");
+        console.log("Submitting form for loan ID:", loanId); 
+
+        if (!loanId || isNaN(loanId)) {
+            alert("Invalid loan ID.");
+            return;
+        }
+
+        updateLoan(event, loanId);
+    });
+
+    // Function to update the loan via fetch API
+    function updateLoan(event, loanId) {
+        event.preventDefault();
+        console.log("Updating loan with ID:", loanId); 
+
+        const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        const formData = new FormData(document.getElementById("loanForm"));
+
+        fetch(`/api/update-loan/${loanId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert("Loan updated successfully!");
+                    location.reload();
+                } else {
+                    alert("Error updating loan: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error updating loan:", error);
+                alert("Failed to update loan. Please check the console for details.");
+            });
+    }
+
+    // Close Loan Popup
+    window.closeLoanPopup = function () {
+        document.getElementById("loanPopup").style.display = "none";
+    };
+
+    // Prevent popup from opening automatically
+    document.getElementById("loanPopup").style.display = "none";
+    
+    // Close popup when clicking outside modal
+    window.onclick = function (event) {
+        let modal = document.getElementById('loanPopup');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    // Delete Loan Functionality
+    const loanCheckboxes = document.querySelectorAll(".loan-checkbox");
+    const deleteLoanBtn = document.getElementById("delete-loan-btn");
+
+    // Enable/disable delete button based on checkbox selection
+    loanCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function() {
+            const selectedLoans = document.querySelectorAll(".loan-checkbox:checked:not([disabled])");
+            deleteLoanBtn.disabled = selectedLoans.length === 0;
+        });
+    });
+
+    // Delete button click handler
+    if (deleteLoanBtn) {
+        deleteLoanBtn.addEventListener("click", function() {
+            const selectedLoans = document.querySelectorAll(".loan-checkbox:checked:not([disabled])");
+            
+            if (selectedLoans.length === 0) {
+                alert("Please select at least one loan record to delete.");
+                return;
+            }
+
+            // Get first selected loan ID (since our view handles one at a time)
+            const loanId = selectedLoans[0].getAttribute("data-id");
+            const loanStatus = selectedLoans[0].getAttribute("data-status");
+            
+            if (loanStatus !== "Open") {
+                alert("Only loans with 'Open' status can be deleted.");
+                return;
+            }
+            
+            if (confirm("Are you sure you want to delete this loan?")) {
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                fetch(`/delete-loan/${loanId}/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message || "Loan successfully deleted!");
+                        location.reload();
+                    } else {
+                        throw new Error(data.error || "Failed to delete loan");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error deleting loan: " + error.message);
+                });
+            }
+        });
+    }
+
+    // Initialize EMI breakdown div to prevent text selection
+    let emiBreakdownDiv = document.getElementById("emiBreakdown");
+    if (emiBreakdownDiv) {
+        emiBreakdownDiv.onselectstart = function() { return false; };
+        emiBreakdownDiv.onmousedown = function() { return false; };
+    }
+});
+</script>
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

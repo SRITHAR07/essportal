@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 10px;
+            width: 95%;
+            margin-left:2%;
+        } 
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .form-group label {
+            width: 50%;
+            font-weight: bold;
+            text-align: right;
+            padding-right: 20px;
+            height: 30px;
+            line-height: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 55%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .form-group select {
+            height: 40px;
+        } 
+        /* Style for the button group container */
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between the buttons */
+    justify-content: center; /* Center the buttons horizontally */
+    margin-top: 20px; /* Space above the button group */
+}
+
+/* Style for the buttons */
+.button-group button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding inside the buttons */
+    border: none; /* Remove default button border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size for the text */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for background color change */
+}
+
+/* Hover effect for buttons */
+.button-group button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Style for the 'Save to Draft' button */
+.button-group button[value="draft"] {
+    background-color: #f0ad4e; /* Amber color */
+}
+
+.button-group button[value="draft"]:hover {
+    background-color: #ec971f; /* Darker amber on hover */
+}
+
+/* Style for the 'Submit' button */
+.button-group button[value="submit"] {
+    background-color: #0275d8; /* Blue color */
+}
+
+.button-group button[value="submit"]:hover {
+    background-color: #025aa5; /* Darker blue on hover */
+}
+
+ /* Styling for Buttons */
+ .new-loan-btn, .delete-btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-loan-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #d9534f;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .delete-btn.enabled {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background-color: #c9302c;
+        }
+        .exit-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #ff4d4d; /* Red color */
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.exit-btn:hover {
+    background-color: #d32f2f; /* Darker red */
+    transform: scale(1.1);
+}
+
+.exit-btn:active {
+    background-color: #b71c1c;
+    transform: scale(1);
+}
+</style>
+<body>
+    <button class="exit-btn" onclick="exitPage()">X</button>
+    <div class="loan-container">
+        <h2>Loan Application</h2>
+        <form id="loanForm" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="loanReqDate">Loan Req. Date:</label>
+                <input type="date" id="loanReqDate" name="loanReqDate" required>
+                <label for="loanType">Loan Type:</label>
+                <select id="loanType" name="loanType" required>
+                    <option value="">Please select</option>
+                    {% for loan in loan_types %}
+                        <option value="{{ loan.id }}">
+                            {{ loan.loanname }}
+                        </option>
+                    {% endfor %}
+                </select>                
+            </div>
+            <div class="form-group">
+                <label for="loanAmount">Required Loan Amount:</label>
+                <input type="number" id="loanAmount" name="loanAmount" required>
+                <label for="noOfDues">No of Dues:</label>
+                <input type="number" id="noOfDues" name="noOfDues" required>
+            </div>
+            <div class="form-group">
+                <label for="loanEmi">Loan EMI:</label>
+                <input type="number" id="loanEmi" name="loanEmi" step="0.01" readonly required>
+                <label for="interestRate">Interest Rate:</label>
+                <input type="number" id="interestRate" name="interestRate" step="0.01" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="interestAmount">Interest Amount:</label>
+                <input type="number" id="interestAmount" name="interestAmount" step="0.01" value="0">
+                <label for="dedMode">Mode of Deduction:</label>
+                <select id="dedMode" name="dedMode" required>
+                    <option value="">Please select</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dedStart">Deduction Start:</label>
+                <input type="date" id="dedStart" name="dedStart" required>
+                <label for="sanctionedAmount">Sanctioned Amount:</label>
+                <input type="number" id="sanctionedAmount" name="sanctionedAmount" readonly required>
+            </div>
+            <div class="form-group">
+                <label for="sanctionedDues">Sanctioned Dues:</label>
+                <input type="number" id="sanctionedDues" name="sanctionedDues" readonly required>
+                <label for="sanctionedEmi">Sanctioned EMI:</label>
+                <input type="number" id="sanctionedEmi" name="sanctionedEmi" step="0.01" readonly required>
+            </div>
+            <div class="form-group">
+                <label for="sanctionedNet">Sanctioned Net:</label>
+                <input type="number" id="sanctionedNet" name="sanctionedNet" step="0.01" readonly required>
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks" rows="3"></textarea>
+            </div>
+            <!-- EMI Breakdown in comma-separated text format -->
+            <div class="form-group">
+                <label>EMI Breakdown:</label>
+                <div id="emiBreakdown" style="margin-top: 5px; padding: 5px; border: 1px solid #ddd; border-radius: 5px; display: none; width: 340px; user-select: none;">
+                    <div id="emiTextBreakdown" style="font-size: 14px; white-space: pre-wrap;"></div>
+                    <div style="margin-top: 5px;"><strong>Total: ₹<span id="emiTotal">0.00</span></strong></div>
+                </div>
+            </div>
+            <input type="hidden" id="approvalStatus" name="approvalStatus" value="Pending">
+            <div class="button-group">
+                <button type="submit" name="action" value="draft">Save to Draft</button>
+                <button type="submit" name="action" value="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <script>
+    function exitPage() {
+        window.location.href = "{% url 'loanapplications' %}";  
+    }
+    
+    function calculateInterestAndEMI() {
+        let loanAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
+        let noOfDues = parseInt(document.getElementById("noOfDues").value) || 1;
+        let interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+        
+        // Calculate monthly interest amount
+        let annualInterest = loanAmount * (interestRate / 100) * 12;
+        let monthlyInterest = annualInterest / 12;
+        
+        // Update interest amount field
+        document.getElementById("interestAmount").value = monthlyInterest.toFixed(2);
+        
+        // Calculate total payable amount (principal + total interest)
+        let totalInterest = monthlyInterest * noOfDues;
+        let totalPayable = loanAmount + totalInterest;
+        
+        // Calculate EMI (rounded to nearest integer)
+        let emi = Math.round(totalPayable / noOfDues);
+        
+        // Update EMI field
+        document.getElementById("loanEmi").value = emi.toFixed(2);
+        
+        // Update sanctioned fields
+        updateSanctionedFields();
+    }
+    
+    function updateSanctionedFields() {
+        let loanAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
+        let noOfDues = parseInt(document.getElementById("noOfDues").value) || 1;
+        let interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+        let loanEmi = document.getElementById("loanEmi");
+        let sanctionedAmount = document.getElementById("sanctionedAmount");
+        let sanctionedNet = document.getElementById("sanctionedNet");
+        let sanctionedDues = document.getElementById("sanctionedDues");
+        let sanctionedEmi = document.getElementById("sanctionedEmi");
+        let emiBreakdownDiv = document.getElementById("emiBreakdown");
+        let emiTextBreakdown = document.getElementById("emiTextBreakdown");
+        let emiTotal = document.getElementById("emiTotal");
+    
+        // Calculate total payable amount
+        let annualInterest = loanAmount * (interestRate / 100) * 12;
+        let monthlyInterest = annualInterest / 12;
+        let totalInterest = monthlyInterest * noOfDues;
+        let totalPayable = loanAmount + totalInterest;
+    
+        if (sanctionedAmount) sanctionedAmount.value = loanAmount.toFixed(2);
+        if (sanctionedNet) sanctionedNet.value = totalPayable.toFixed(2);
+        if (sanctionedDues) sanctionedDues.value = noOfDues;
+    
+        if (loanAmount > 0 && noOfDues > 0) {
+            // Calculate EMI breakdown
+            let emi = Math.round(totalPayable / noOfDues);
+            let sumOfFirstEMIs = emi * (noOfDues - 1);
+            let lastEmi = totalPayable - sumOfFirstEMIs;
+    
+            // Display EMI values correctly
+            let emiParts = [];
+            for (let i = 0; i < noOfDues; i++) {
+                let emiAmount = (i < noOfDues - 1) ? emi : lastEmi;
+                let suffix = getOrdinalSuffix(i + 1);
+                emiParts.push(`${i+1}${suffix} EMI=₹${emiAmount.toFixed(2)}`);
+            }
+    
+            // Group into chunks of 10 per line
+            let emiLines = [];
+            for (let i = 0; i < emiParts.length; i += 10) {
+                emiLines.push(emiParts.slice(i, i + 10).join(", "));
+            }
+    
+            emiTextBreakdown.innerHTML = emiLines.join("<br>");
+            emiTotal.textContent = totalPayable.toFixed(2);
+            emiBreakdownDiv.style.display = "block";
+    
+            // Adjust text size based on width
+            adjustTextSize();
+    
+            if (loanEmi) loanEmi.value = emi.toFixed(2);
+            if (sanctionedEmi) sanctionedEmi.value = emi.toFixed(2);
+        } else {
+            if (loanEmi) loanEmi.value = "0.00";
+            if (sanctionedEmi) sanctionedEmi.value = "0.00";
+            emiBreakdownDiv.style.display = "none";
+        }
+    }
+    
+    function adjustTextSize() {
+        let emiBreakdownDiv = document.getElementById("emiBreakdown");
+        let emiTextBreakdown = document.getElementById("emiTextBreakdown");
+    
+        let divWidth = emiBreakdownDiv.clientWidth;
+        let newSize = divWidth / 30;
+        emiTextBreakdown.style.fontSize = Math.max(10, newSize) + "px";
+    }
+    
+    function getOrdinalSuffix(number) {
+        const j = number % 10;
+        const k = number % 100;
+        if (j == 1 && k != 11) return "st";
+        if (j == 2 && k != 12) return "nd";
+        if (j == 3 && k != 13) return "rd";
+        return "th";
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        let emiBreakdownDiv = document.getElementById("emiBreakdown");
+        emiBreakdownDiv.onselectstart = function() { return false; };
+        emiBreakdownDiv.onmousedown = function() { return false; };
+    });
+    
+    // Event listeners for input changes
+    document.getElementById("loanAmount").addEventListener("input", calculateInterestAndEMI);
+    document.getElementById("noOfDues").addEventListener("input", calculateInterestAndEMI);
+    document.getElementById("interestRate").addEventListener("input", calculateInterestAndEMI);
+</script>

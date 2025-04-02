@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Document Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #F9F9F9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .header {
+            width: 100%;
+            background: #FFF3CD;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .container {
+            max-width: 700px;
+            background: #FFFFFF;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 60px;
+        }
+        label {
+            font-weight: 500;
+            color: #444;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background-color: #FFD700;
+            border: none;
+            font-size: 16px;
+            color: #333;
+        }
+        .btn-primary:hover {
+            background-color: #FFC107;
+        }
+        .form-control, .form-select {
+            background: #fff;
+            border: 1px solid #FFD700;
+            box-shadow: none;
+        }
+        .icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header"><i class="bi bi-person-fill"></i> Upload New Document</div>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-3">
+            
+                <div class="col-md-6">
+                    <label for="docid" class="form-label"><i class="bi bi-file-earmark-text icon"></i> Document Name:</label>
+                    <select class="form-select" id="docid" name="docid" required>
+                        <option value="" disabled selected>Select a Document</option>
+                        {% for doc in documents %}
+                            <option value="{{ doc.id }}">{{ doc.docname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="document_file" class="form-label"><i class="bi bi-upload icon"></i> Upload Document:</label>
+                    <input type="file" class="form-control" id="document_file" name="document_file" accept="image/*">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="openCamera()">
+                        <i class="bi bi-camera icon"></i> Capture Document
+                    </button>
+                    <video id="camera" style="display:none; width:100%;" autoplay></video>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                    <button type="button" class="btn btn-success mt-2" id="captureBtn" style="display:none;" onclick="capturePhoto()">
+                        <i class="bi bi-camera-fill"></i> Take Photo
+                    </button>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="docno" class="form-label"><i class="bi bi-hash icon"></i> Document Number:</label>
+                    <input type="text" class="form-control" id="docno" name="docno">
+                </div>
+                <div class="col-md-6">
+                    <label for="chkid" class="form-label"><i class="bi bi-check2-circle icon"></i> Check List:</label>
+                    <select class="form-select" id="chkid" name="chkid" required>
+                        <option value="" disabled selected>Select a check</option>
+                        {% for chk in checklist %}
+                            <option value="{{ chk.id }}">{{ chk.chklistname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="expirydt" class="form-label"><i class="bi bi-calendar icon"></i> Expiry Date:</label>
+                    <input type="date" class="form-control" id="expirydt" name="expirydt">
+                </div>
+                
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send icon"></i> Submit</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+         function openCamera() {
+        let video = document.getElementById('camera');
+        let captureBtn = document.getElementById('captureBtn');
+        let constraints = { video: { facingMode: 'environment' } };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function(stream) {
+                video.style.display = 'block';
+                captureBtn.style.display = 'block';
+                video.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error('Error accessing the camera:', error);
+            });
+    }
+
+    function capturePhoto() {
+        let video = document.getElementById('camera');
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob(function(blob) {
+            let file = new File([blob], "captured_image.jpg", { type: "image/jpeg" });
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById('document_file').files = dataTransfer.files;
+        }, "image/jpeg");
+        
+        video.style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'none';
+    }
+    </script>
+</body>
+</html>
