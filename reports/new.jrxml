@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<!-- 2025-02-26T10:26:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeReport" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0d291db2-2713-4c16-b6e6-6488bc202669">
+	<parameter name="Plantcode" class="java.lang.String"/>
+	<parameter name="Department" class="java.lang.String"/>
+	<parameter name="Designation" class="java.lang.String"/>
+	<parameter name="Subdepartment" class="java.lang.String"/>
+	<parameter name="Attendance" class="java.lang.String"/>
+	<parameter name="Gender" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT t.EmpID,e.Empno, e.Empname, e.Gender, d.Designame, dept.Deptname, 
+               s.Subdeptname, t.Attndt, t.Attn, r.Lastpresent
+        FROM dbo.app_temp_attn t
+        INNER JOIN dbo.Mas_Emp_Official e ON t.EmpID = e.ID
+        INNER JOIN dbo.Mas_Dept dept ON e.DeptID = dept.ID
+        INNER JOIN dbo.Mas_Designation d ON e.DesigID = d.ID
+        INNER JOIN dbo.Mas_Subdept s ON e.SubdeptID = s.ID
+        INNER JOIN dbo.Mas_Emprange r ON e.ID = r.ID
+        WHERE 
+            ($P{Plantcode} IS NULL OR t.Plantcode = $P{Plantcode}) 
+            AND ($P{Department} IS NULL OR dept.Deptname = $P{Department}) 
+            AND ($P{Designation} IS NULL OR d.Designame = $P{Designation}) 
+            AND ($P{Subdepartment} IS NULL OR s.Subdeptname = $P{Subdepartment}) 
+            AND ($P{Attendance} IS NULL OR t.Attn = $P{Attendance}) 
+            AND ($P{Gender} IS NULL OR e.Gender = $P{Gender})]]>
+	</queryString>
+	<field name="EmpID" class="java.lang.String"/>
+	<field name="Empno" class="java.lang.String"/>
+	<field name="Empname" class="java.lang.String"/>
+	<field name="Gender" class="java.lang.String"/>
+	<field name="Deptname" class="java.lang.String"/>
+	<field name="Designame" class="java.lang.String"/>
+	<field name="Subdeptname" class="java.lang.String"/>
+	<field name="Attndt" class="java.util.Date"/>
+	<field name="Attn" class="java.lang.String"/>
+	<field name="Lastpresent" class="java.sql.Timestamp"/>
+	<title>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="10" width="555" height="30" uuid="b5e80316-fe67-4dd3-ae29-ede1a50f2127"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Employee Attendance Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="69" y="0" width="60" height="30" backcolor="#EDE6E6" uuid="2cc60e89-a564-4b82-b2cc-f519b4dcc2bc"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empname]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="0" width="70" height="30" backcolor="#EDE6E6" uuid="946a0992-3e68-4028-9d67-bc812b4f3935"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Deptname]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="70" height="30" backcolor="#EDE6E6" uuid="1c6147ba-352b-44bb-aae5-5a58990d8a47"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Designame]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="0" width="75" height="30" backcolor="#EDE6E6" uuid="2d631bc9-c7c4-4fc1-86fc-5ee2223df91a"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subdeptname]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="445" y="0" width="35" height="30" backcolor="#EDE6E6" uuid="4746ff4d-771c-4c84-813d-5c6153ef6c2c"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attn]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="55" height="30" backcolor="#EDE6E6" uuid="3e39b874-82cd-4f11-881a-45c6ccf7786b"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lastpresent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="0" width="50" height="30" backcolor="#EDE6E6" uuid="63791c1c-a2df-42a0-8ec8-e9945a485a7d"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="395" y="0" width="50" height="30" backcolor="#EDE6E6" uuid="3474cb64-b34b-4bf2-abd9-087451ef7e61"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attndt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="0" width="50" height="30" uuid="eb961f5c-939a-4d1b-85e4-ea43eb397acf"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EmpID]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="130" y="0" width="50" height="30" uuid="b6694cb7-3c6a-464a-90b3-f064560cbb10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Empno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="0" width="60" height="30" uuid="bec2712b-be17-4bad-a04c-3c1551d17434"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Empname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="325" y="0" width="70" height="30" uuid="76fc2dbb-8221-4158-91be-82d1df474cb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Deptname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="70" height="30" uuid="b455a247-ff5c-481f-a34a-67e28df252fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Designame}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="75" height="30" uuid="81f1064b-8a7b-4ff0-a1e7-ce3b40b91fa6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Subdeptname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="395" y="0" width="50" height="30" uuid="9ee91a65-bcc3-4525-a3d4-ddce27fcbd1c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Attndt}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="445" y="0" width="35" height="30" uuid="0997ff62-1403-4b05-b42f-9b01a409bc13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Attn}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="55" height="30" uuid="d87f9b8a-b706-4c46-94ef-18ccad941767"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Lastpresent}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="0" width="50" height="30" uuid="2f494296-7c01-425b-9fe3-cc6d59cbfa90"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{EmpID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="14" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

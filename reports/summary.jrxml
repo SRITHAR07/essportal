@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<!-- 2025-03-17T15:06:03 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="attnsum" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2266ae55-2dfd-4058-801f-b618230d82af">
+	<parameter name="group_by" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[WITH GroupedData AS (
+    SELECT 
+        CASE 
+            WHEN $P{group_by} = 'Deptname' THEN d.Deptname
+            WHEN $P{group_by} = 'Subdeptname' THEN s.Subdeptname
+            WHEN $P{group_by} = 'Designame' THEN g.Designame
+        END AS GroupField,
+        e.Gender,
+        t.Attn
+    FROM dbo.Mas_Emp_Official e
+    INNER JOIN dbo.app_temp_attn t ON e.ID = t.EmpID
+    LEFT JOIN dbo.Mas_Dept d ON e.DeptID = d.ID
+    LEFT JOIN dbo.Mas_Subdept s ON e.SubdeptID = s.ID
+    LEFT JOIN dbo.Mas_Designation g ON e.Desigid = g.ID
+)
+SELECT 
+    GroupField,
+    COUNT(CASE WHEN Gender = 'Male' AND Attn = 'P' THEN 1 END) AS Male_Present,
+    COUNT(CASE WHEN Gender = 'Male' AND Attn = 'AB' THEN 1 END) AS Male_Absent,
+    COUNT(CASE WHEN Gender = 'Female' AND Attn = 'P' THEN 1 END) AS Female_Present,
+    COUNT(CASE WHEN Gender = 'Female' AND Attn = 'AB' THEN 1 END) AS Female_Absent
+FROM GroupedData
+GROUP BY GroupField
+ORDER BY GroupField;]]>
+	</queryString>
+	<field name="GroupField" class="java.lang.String"/>
+	<field name="Male_Present" class="java.lang.Integer"/>
+	<field name="Male_Absent" class="java.lang.Integer"/>
+	<field name="Female_Present" class="java.lang.Integer"/>
+	<field name="Female_Absent" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<textField>
+				<reportElement x="110" y="60" width="342" height="30" uuid="8715f9b3-7c4a-41a9-9953-acdfa410b82d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Bamini" size="19"/>
+				</textElement>
+				<textFieldExpression><![CDATA["tUif RUf;fk;"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="20" width="333" height="40" uuid="81f2ac64-4830-4387-b746-204665dc55d1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Attendance summary"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="111" height="30" uuid="d3bc01da-56fb-49d7-b80f-0eb23bac6e80"/>
+				<text><![CDATA[GroupField]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="111" y="0" width="111" height="30" uuid="b3132e45-40c8-466f-8fc8-aa4f156c8c20"/>
+				<text><![CDATA[Male_Present]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="0" width="111" height="30" uuid="f03f8849-83a9-4b5a-b510-1549d4c820a0"/>
+				<text><![CDATA[Male_Absent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="0" width="111" height="30" uuid="2c0d5083-d3ab-4a1f-9f09-ebefe91993fc"/>
+				<text><![CDATA[Female_Present]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="444" y="0" width="111" height="30" uuid="26c2460f-4f21-476d-a598-39e60236e591"/>
+				<text><![CDATA[Female_Absent]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="111" height="30" uuid="fb1e69b8-65e0-400c-8171-542d86fd7fb7"/>
+				<textFieldExpression><![CDATA[$F{GroupField}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="0" width="111" height="30" uuid="d3a6aadd-77ea-44b5-9089-a209e66b6cf3"/>
+				<textFieldExpression><![CDATA[$F{Male_Present}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="0" width="111" height="30" uuid="b3dade08-bd00-4f60-bdd0-cddecb53ab4e"/>
+				<textFieldExpression><![CDATA[$F{Male_Absent}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="333" y="0" width="111" height="30" uuid="99426488-42e1-4999-8524-959867113aa1"/>
+				<textFieldExpression><![CDATA[$F{Female_Present}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="0" width="111" height="30" uuid="118e5b2f-193c-4e67-863d-4f546853ca2a"/>
+				<textFieldExpression><![CDATA[$F{Female_Absent}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

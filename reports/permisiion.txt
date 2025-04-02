@@ -1,0 +1,62 @@
+USE [GennHRMS]
+GO
+
+/** Object:  Table [dbo].[Ent_Permission]    Script Date: 27-Mar-2025 19:08:49 **/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Ent_Permission](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Plantcode] [varchar](10) NOT NULL,
+	[EmpID] [int] NOT NULL,
+	[Attndt] [datetime] NOT NULL,
+	[Reqfrom] [time](7) NOT NULL,
+	[Reqto] [time](7) NOT NULL,
+	[Reqperhr] [time](7) NULL,
+	[Perreason] [varchar](50) NULL,
+	[Actfrom] [time](7) NULL,
+	[Actto] [time](7) NULL,
+	[Acthr] [time](7) NULL,
+	[Appstatus] [varchar](10) NOT NULL,
+	[Appcomments] [varchar](100) NULL,
+	[Createdby] [varchar](15) NULL,
+	[Createddate] [datetime] NULL,
+	[Updatedby] [varchar](15) NULL,
+	[Updateddate] [datetime] NULL,
+ CONSTRAINT [PK_Ent_Permission] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Ent_Permission] ADD  CONSTRAINT [DF_Ent_Permission_Appstatus]  DEFAULT ('Open') FOR [Appstatus]
+GO
+
+
+----------------------
+
+
+USE [GennHRMS]
+GO
+/** Object:  StoredProcedure [dbo].[Permissionapproval]    Script Date: 27-Mar-2025 19:11:28 **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+Create PROCEDURE [dbo].[Permissionapproval] @RefID Int
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+	update Ent_Permission set Actfrom = Reqfrom,Actto = Reqto,Acthr = Reqperhr where ID = @RefID
+	update a set a.Perhrs = (isnull(datepart(hour,p.acthr),0) * 60) + isnull(datepart(minute,p.acthr),0)  from Attn_Actdaily a inner join ent_permission p on p.empid = a.EmpID and p.attndt = a.Attndt
+	where p.ID = @RefID and a.Islock = 0
+END
